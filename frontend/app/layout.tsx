@@ -13,10 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <div className="bg-glow bg-glow-1"></div>
-        <div className="bg-glow bg-glow-2"></div>
         <header className="app-header">
           <Navbar />
         </header>

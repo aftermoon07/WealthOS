@@ -1,34 +1,41 @@
+/* Navbar component styles — tokens from globals.css */
+
+/* Brand wordmark container */
 .nav-brand {
   cursor: pointer;
+  text-decoration: none;
+}
+.brand-name {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--text-primary);
 }
 
-.brand-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(99, 102, 241, 0.1);
-  border-radius: 10px;
-  border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
+/* Nav link: active indicator is a bottom border flush with nav edge.
+   The .app-header height is 56px; link padding-bottom aligns the border
+   with the header's border-bottom. */
 .nav-link {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
   color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: var(--border-radius-full);
-  transition: all var(--transition-fast);
+  padding: var(--space-2) 0;
+  border-bottom: 1.5px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  white-space: nowrap;
 }
-
-.nav-link:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
-}
-
+.nav-link:hover  { color: var(--text-primary); }
 .nav-link.active {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-bottom-color: var(--text-primary);
+}
+
+/* Nav actions area */
+.nav-actions { display: flex; align-items: center; gap: var(--space-4); }
+
+/* Legacy brand-logo div in existing Navbar.tsx — neutralized */
+.brand-logo {
+  display: none; /* wordmark alone is the brand mark per spec */
 }
