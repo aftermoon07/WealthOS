@@ -16,3 +16,10 @@ venv/
 env/
 .venv/
 .DS_Store
+
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+backend/logs/
