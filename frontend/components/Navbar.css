@@ -1,41 +1,174 @@
-/* Navbar component styles — tokens from globals.css */
+/* Navbar.css — scoped to Navbar component. Tokens from globals.css */
 
-/* Brand wordmark container */
-.nav-brand {
-  cursor: pointer;
+/* -- Desktop layout ----------------------------------------- */
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  height: 56px;
+}
+
+/* Nav wordmark — already has .nav-wordmark in globals, extend here */
+.nav-wordmark {
+  flex-shrink: 0;
   text-decoration: none;
 }
-.brand-name {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  font-weight: 400;
-  color: var(--text-primary);
+
+/* Desktop link strip */
+.nav-links-desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex: 1;
 }
 
-/* Nav link: active indicator is a bottom border flush with nav edge.
-   The .app-header height is 56px; link padding-bottom aligns the border
-   with the header's border-bottom. */
+/* Active indicator: bottom border flush with the header's bottom edge.
+   The header is 56px; the link itself sits centered, so we use
+   padding-bottom to push the border toward the edge visually. */
 .nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding-bottom: 2px;  /* visual alignment with header border-bottom */
+}
+
+/* Desktop actions */
+.nav-actions-desktop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Mobile hamburger — hidden on desktop */
+.nav-hamburger {
+  display: none;
+  flex-shrink: 0;
+}
+
+/* -- Angel One status button -------------------------------- */
+.ao-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2) 0;
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  transition: color var(--transition-fast);
+  min-height: 44px;  /* touch target */
+}
+.ao-status:hover:not(:disabled) { color: var(--text-secondary); }
+.ao-status:disabled { cursor: default; }
+
+.ao-label {
+  font-size: var(--type-caption);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* -- Hamburger icon (CSS only) ------------------------------ */
+.hamburger-icon,
+.hamburger-icon::before,
+.hamburger-icon::after {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--text-primary);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  position: relative;
+}
+.hamburger-icon { margin: auto; }
+.hamburger-icon::before,
+.hamburger-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+.hamburger-icon::before { top: -5px; }
+.hamburger-icon::after  { top: 5px; }
+
+/* Open state — X shape */
+.hamburger-icon.open            { background: transparent; }
+.hamburger-icon.open::before    { transform: rotate(45deg); top: 0; }
+.hamburger-icon.open::after     { transform: rotate(-45deg); top: 0; }
+
+/* -- Mobile menu overlay ------------------------------------ */
+.mobile-menu-overlay {
+  display: none; /* shown only at mobile via media query override */
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  animation: fadeIn 150ms ease-out;
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  background: var(--surface-base);
+  border-left: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  animation: slideInRight 150ms ease-out;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+}
+
+.mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 1.125rem;    /* 18px per spec */
   font-weight: 400;
   color: var(--text-secondary);
   text-decoration: none;
+  min-height: 44px;       /* touch target */
   padding: var(--space-2) 0;
-  border-bottom: 1.5px solid transparent;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
-  white-space: nowrap;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: color var(--transition-fast);
 }
-.nav-link:hover  { color: var(--text-primary); }
-.nav-link.active {
-  color: var(--text-primary);
-  border-bottom-color: var(--text-primary);
+.mobile-nav-link:hover,
+.mobile-nav-link.active { color: var(--text-primary); }
+.mobile-nav-link.active { font-weight: 500; }
+
+.mobile-menu-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
 }
 
-/* Nav actions area */
-.nav-actions { display: flex; align-items: center; gap: var(--space-4); }
+/* -- Responsive: show mobile elements only on mobile -------- */
+@media (max-width: 768px) {
+  .nav-links-desktop,
+  .nav-actions-desktop  { display: none; }
+  .nav-hamburger        { display: flex; margin-left: auto; }
+  .mobile-menu-overlay  { display: block; }
+}
 
-/* Legacy brand-logo div in existing Navbar.tsx — neutralized */
-.brand-logo {
-  display: none; /* wordmark alone is the brand mark per spec */
+/* Slide animation for mobile menu */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }

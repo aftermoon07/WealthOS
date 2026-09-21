@@ -1,73 +1,156 @@
 "use client";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import ConnectDataModal from './ConnectDataModal';
-import './Navbar.css';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import ConnectDataModal from "./ConnectDataModal";
+import "./Navbar.css";
+
+const NAV_LINKS = [
+  { name: "Dashboard",     href: "/" },
+  { name: "Portfolio",     href: "/portfolio" },
+  { name: "Spending",      href: "/spending" },
+  { name: "Intelligence",  href: "/assistant" },
+];
+
+type AOStatus = { connected: boolean; credentials_configured: boolean; last_sync: string | null };
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalOpen, setModalOpen]   = useState(false);
+  const [menuOpen, setMenuOpen]     = useState(false);
+  const [aoStatus, setAoStatus]     = useState<AOStatus | null>(null);
+  const [syncing,  setSyncing]      = useState(false);
 
-  const navLinks = [
-    { name: 'Dashboard', href: '/' },
-    { name: 'Portfolio', href: '/portfolio' },
-    { name: 'Spending', href: '/spending' },
-    { name: 'WealthOS AI', href: '/assistant' },
-  ];
+  // Fetch Angel One status once on mount — lightweight, no polling
+  useEffect(() => {
+    fetch("/api/integrations/angelone/status")
+      .then(r => r.ok ? r.json() : null)
+      .then(d => d && setAoStatus(d))
+      .catch(() => {}); // silent — status is non-critical
+  }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => { setMenuOpen(false); }, [pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      const res  = await fetch("/api/integrations/angelone/sync", { method: "POST" });
+      const data = await res.json();
+      if (data.status === "synced") {
+        setAoStatus(prev => prev ? { ...prev, connected: true, last_sync: new Date().toISOString() } : prev);
+      }
+    } catch {}
+    finally { setSyncing(false); }
+  }
+
+  // Derive Angel One display state
+  const aoConnected = aoStatus?.credentials_configured && aoStatus?.connected;
+  const aoLabel     = syncing ? "Syncing…" : aoConnected ? "AngelOne" : "AngelOne";
+  const dotClass    = syncing ? "status-dot status-dot-warning" :
+                      aoConnected ? "status-dot status-dot-live" :
+                      "status-dot status-dot-offline";
 
   return (
-    <div className="container flex-row space-between">
-      <div className="nav-brand flex-row gap-sm">
-        <div className="brand-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#paint0_linear)"/>
-            <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <defs>
-              <linearGradient id="paint0_linear" x1="2" y1="7" x2="22" y2="7" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/>
-                <stop offset="1" stopColor="#8b5cf6"/>
-              </linearGradient>
-              <linearGradient id="paint1_linear" x1="2" y1="19.5" x2="22" y2="19.5" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/>
-                <stop offset="1" stopColor="#8b5cf6"/>
-              </linearGradient>
-              <linearGradient id="paint2_linear" x1="2" y1="14.5" x2="22" y2="14.5" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6366f1"/>
-                <stop offset="1" stopColor="#8b5cf6"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <span className="brand-name heading-3 text-gradient">WealthOS</span>
-      </div>
-      
-      <nav className="nav-links flex-row gap-md">
-        {navLinks.map((link) => {
-          const isActive = pathname === link.href;
-          return (
-            <Link 
-              key={link.name} 
-              href={link.href}
-              className={`nav-link ${isActive ? 'active' : ''}`}
+    <>
+      <div className="container nav-inner">
+        {/* Wordmark */}
+        <Link href="/" className="nav-wordmark">WealthOS</Link>
+
+        {/* Desktop links */}
+        <nav className="nav-links-desktop" aria-label="Primary navigation">
+          {NAV_LINKS.map(({ name, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`nav-link${pathname === href ? " active" : ""}`}
             >
-              {link.name}
+              {name}
             </Link>
-          );
-        })}
-      </nav>
-      
-      <div className="nav-actions">
-        <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-          Connect Data
+          ))}
+        </nav>
+
+        {/* Desktop actions */}
+        <div className="nav-actions-desktop">
+          {/* Angel One status — dot + text, clickable to sync */}
+          <button
+            className="ao-status"
+            onClick={handleSync}
+            disabled={syncing}
+            title={aoConnected ? "Click to sync AngelOne" : "AngelOne not connected"}
+          >
+            <span className={dotClass} aria-hidden="true" />
+            <span className="ao-label">{aoLabel}</span>
+          </button>
+
+          <button className="btn btn-secondary" onClick={() => setModalOpen(true)}>
+            Import Data
+          </button>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="nav-hamburger btn-icon"
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
+          {/* Three-line icon — pure CSS, no library */}
+          <span className={`hamburger-icon${menuOpen ? " open" : ""}`} aria-hidden="true" />
         </button>
       </div>
 
-      <ConnectDataModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
-    </div>
+      {/* Mobile overlay menu */}
+      {menuOpen && (
+        <div className="mobile-menu-overlay" onClick={() => setMenuOpen(false)}>
+          <nav
+            className="mobile-menu"
+            onClick={e => e.stopPropagation()}
+            aria-label="Mobile navigation"
+          >
+            <div className="mobile-menu-header">
+              <span className="nav-wordmark">WealthOS</span>
+              <button
+                className="btn-icon"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mobile-menu-links">
+              {NAV_LINKS.map(({ name, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`mobile-nav-link${pathname === href ? " active" : ""}`}
+                >
+                  {name}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mobile-menu-footer">
+              <button className="ao-status" onClick={handleSync} disabled={syncing}>
+                <span className={dotClass} aria-hidden="true" />
+                <span className="ao-label">{aoLabel}</span>
+              </button>
+              <button className="btn btn-secondary" style={{ width: "100%" }} onClick={() => { setMenuOpen(false); setModalOpen(true); }}>
+                Import Data
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
+
+      <ConnectDataModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    </>
   );
 }
