@@ -71,7 +71,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Finance Intelligence Engine",
+    title="WealthOS",
     description="Privacy-first AI-powered personal finance tracker and portfolio analysis system.",
     version="0.1.0",
     lifespan=lifespan,
@@ -91,7 +91,7 @@ app.include_router(router, prefix="/api")
 @app.get("/")
 async def root():
     return {
-        "name": "Finance Intelligence Engine",
+        "name": "WealthOS",
         "version": "0.1.0",
         "docs": "/docs",
         "health": "/api/health",

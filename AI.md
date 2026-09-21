@@ -1,6 +1,6 @@
 # AI Grounding Architecture
 
-The Finance Intelligence Engine uses a "Grounded AI" approach. The AI (Gemini) acts purely as an interpretation and reasoning layer on top of a deterministic financial engine.
+The WealthOS uses a "Grounded AI" approach. The AI (Gemini) acts purely as an interpretation and reasoning layer on top of a deterministic financial engine.
 
 ## The Problem with LLMs in Finance
 Large Language Models are notoriously bad at math. If you give an LLM a list of 500 transactions and ask it to calculate your savings rate or portfolio XIRR, it will hallucinate a number that looks plausible but is completely wrong. Financial data requires 100% precision.

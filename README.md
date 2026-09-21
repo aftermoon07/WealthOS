@@ -1,8 +1,8 @@
-# Finance Intelligence Engine
+# WealthOS
 
 A privacy-first, AI-powered personal finance tracker and portfolio analysis system.
 
-Unlike generic expense trackers, the Finance Intelligence Engine acts as your Personal CFO and Portfolio Analyst. It ingests data, computes highly accurate financial metrics (XIRR, Savings Rate, Net Worth), and allows an AI agent to interpret those deterministic metrics to answer natural-language questions about your financial health.
+Unlike generic expense trackers, WealthOS acts as your Personal CFO and Portfolio Analyst. It ingests data, computes highly accurate financial metrics (XIRR, Savings Rate, Net Worth), and allows an AI agent to interpret those deterministic metrics to answer natural-language questions about your financial health.
 
 ## Core Features
 - **Deterministic Financial Engine**: Computes cash flows, net worth, portfolio XIRR, and asset allocation exactly.

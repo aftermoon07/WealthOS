@@ -1,4 +1,4 @@
-# Finance Intelligence Engine — Architecture
+# WealthOS — Architecture
 
 ## Vision
 
@@ -108,7 +108,7 @@ Financial Data (CSV / Manual Entry)
 ## Directory Structure
 
 ```
-finance-intelligence-engine/
+WealthOS/
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                      # FastAPI entrypoint

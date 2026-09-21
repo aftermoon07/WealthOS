@@ -3,7 +3,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 
 export const metadata: Metadata = {
-  title: "Finance Intelligence Engine",
+  title: "WealthOS",
   description: "Privacy-first, AI-powered personal finance tracker and portfolio analysis system",
 };
 
