@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './ConnectDataModal.css';
 
 interface ConnectDataModalProps {
@@ -11,10 +11,25 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<{status: 'success' | 'error' | null, message: string}>({ status: null, message: '' });
 
-  // CSV Upload State
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [parserType, setParserType] = useState<string>('generic');
   const [uploading, setUploading] = useState(false);
+  const [accounts, setAccounts] = useState<any[]>([]);
+  const [accountId, setAccountId] = useState<string>('');
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/accounts')
+        .then(res => res.json())
+        .then(data => {
+          setAccounts(data);
+          if (data.length > 0 && !accountId) {
+            setAccountId(data[0].id.toString());
+          }
+        })
+        .catch(console.error);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -59,13 +74,9 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
 
     const formData = new FormData();
     formData.append('file', csvFile);
-    
-    // Default account_id for now, can be improved to select an account
-    formData.append('account_id', '1'); 
-    formData.append('parser_type', parserType);
 
     try {
-      const res = await fetch('/api/import/csv', {
+      const res = await fetch(`/api/import/csv?account_id=${accountId}`, {
         method: 'POST',
         body: formData,
       });
@@ -163,6 +174,20 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
                     <option value="icici">ICICI Bank</option>
                   </select>
                 </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                  <label className="type-body-sm text-secondary">Account</label>
+                  <select 
+                    value={accountId}
+                    onChange={e => setAccountId(e.target.value)}
+                    required
+                    style={{ padding: '0.5rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                  >
+                    <option value="" disabled>Select Account</option>
+                    {accounts.map(acc => (
+                      <option key={acc.id} value={acc.id}>{acc.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 2 }}>
                   <label className="type-body-sm text-secondary">CSV File</label>
                   <input 
@@ -177,10 +202,15 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
               <button 
                 type="submit" 
                 className="btn btn-primary" 
-                disabled={uploading || !csvFile}
+                disabled={uploading || !csvFile || !accountId}
               >
                 {uploading ? 'Uploading...' : 'Upload CSV'}
               </button>
+              {accounts.length === 0 && (
+                <p className="text-secondary" style={{ fontSize: '0.8rem', marginTop: '-0.5rem' }}>
+                  No accounts found. Please create an account in "Add Manual Data" first.
+                </p>
+              )}
             </form>
           </div>
 

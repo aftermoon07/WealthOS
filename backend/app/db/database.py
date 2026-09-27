@@ -2,6 +2,7 @@
 from __future__ import annotations
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import select
 from app.core.config import get_settings
 
 
@@ -33,3 +34,16 @@ async def init_db() -> None:
     """Create all tables on startup (dev/SQLite mode)."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        
+    # Auto-create a default account if none exists
+    from app.db.models import Account
+    async with SessionLocal() as session:
+        result = await session.execute(select(Account))
+        if not result.scalars().first():
+            default_acc = Account(
+                name="Default Checking",
+                account_type="CHECKING",
+                currency="INR"
+            )
+            session.add(default_acc)
+            await session.commit()
