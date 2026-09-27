@@ -172,6 +172,7 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
                     <option value="generic">Generic CSV</option>
                     <option value="hdfc">HDFC Bank</option>
                     <option value="icici">ICICI Bank</option>
+                    <option value="kotak">Kotak Bank</option>
                   </select>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
