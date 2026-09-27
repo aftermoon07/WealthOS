@@ -35,7 +35,7 @@ A **Grounded AI** architecture that:
 - Runs **100% locally** — no data ever leaves your machine
 - Computes all financial metrics in **verified Python** (XIRR, CAGR, WAVG cost basis, P&L)
 - Uses **Gemini** only to *interpret* those numbers, not calculate them
-- Imports real bank statements (HDFC, ICICI, Generic CSV formats)
+- Imports real bank statements (HDFC, ICICI, Kotak, Generic CSV formats)
 - Detects duplicate transactions, fraud patterns, and spending anomalies
 
 ---
@@ -106,9 +106,14 @@ graph TB
 Supports real bank statement formats out of the box:
 - **HDFC Bank** — savings and credit card statements
 - **ICICI Bank** — statement exports
+- **Kotak Bank** — savings and credit card statements
 - **Generic CSV** — configurable column mapping
 
 Duplicate detection via transaction fingerprinting prevents double-imports.
+
+### 📝 Transaction Management
+- **Transactions Page:** View, edit, and delete transactions directly from the UI.
+- **Auto-Account Creation:** Automatically provisions a default account on first launch to ensure smooth onboarding for new users.
 
 ### 🔒 Privacy First
 
@@ -123,7 +128,7 @@ Duplicate detection via transaction fingerprinting prevents double-imports.
 ```mermaid
 graph LR
     subgraph Ingestion ["📥 Ingestion Layer"]
-        CSV[CSV Parser<br/>HDFC / ICICI / Generic]
+        CSV[CSV Parser<br/>HDFC / ICICI / Kotak / Generic]
         Seeder[Demo Seeder<br/>12-month dataset]
     end
 
@@ -303,7 +308,7 @@ WealthOS/
 │   │       │   ├── agent/financial_agent.py   # Agent orchestration
 │   │       │   └── prompts/system_prompt.py   # Grounding contract
 │   │       └── ingestion/
-│   │           ├── csv_parser.py              # HDFC / ICICI / Generic CSV
+│   │           ├── csv_parser.py              # HDFC / ICICI / Kotak / Generic CSV
 │   │           └── demo_seeder.py             # 12-month demo dataset
 │   └── tests/
 │       └── test_domain.py                 # 46 domain unit tests
@@ -514,7 +519,7 @@ npm run lint         # Run ESLint
 
 - [x] Deterministic financial engine (XIRR, WAVG, P&L, CAGR)
 - [x] Grounded AI analyst (Gemini + Tool Layer)
-- [x] Multi-format CSV import (HDFC, ICICI, Generic)
+- [x] Multi-format CSV import (HDFC, ICICI, Kotak, Generic)
 - [x] Duplicate transaction detection
 - [x] 46 unit tests
 - [x] Demo dataset seeder
