@@ -167,6 +167,16 @@ async def update_transaction(txn_id: int, payload: TransactionUpdate, db: AsyncS
     await db.commit()
     return {"status": "updated"}
 
+@router.delete("/transactions/{txn_id}", response_model=dict)
+async def delete_transaction(txn_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Transaction).where(Transaction.id == txn_id))
+    txn = result.scalar_one_or_none()
+    if not txn:
+        raise HTTPException(404, "Transaction not found")
+    await db.delete(txn)
+    await db.commit()
+    return {"status": "deleted"}
+
 
 # ─── Categories ───────────────────────────────────────────────────────────────
 

@@ -8,6 +8,7 @@ import "./Navbar.css";
 
 const NAV_LINKS = [
   { name: "Dashboard",     href: "/" },
+  { name: "Transactions",  href: "/transactions" },
   { name: "Portfolio",     href: "/portfolio" },
   { name: "Spending",      href: "/spending" },
   { name: "Intelligence",  href: "/assistant" },
