@@ -1,185 +1,120 @@
-# 🛡️ DecentralizedClaim
+# 💰 WealthOS
 
 <div align="center">
 
-**Autonomous AI-Powered Insurance Claim Processing with Blockchain Transparency**
+**Privacy-First, AI-Powered Personal Finance Tracker & Portfolio Analysis System**
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?style=for-the-badge&logo=solidity)](https://soliditylang.org/)
-[![Monad](https://img.shields.io/badge/Monad-Testnet-836EF9?style=for-the-badge)](https://monad.xyz/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org/)
+[![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 
-*Solving the "Black Box" problem of traditional insurance through Multi-Agent AI and Blockchain*
+*No data leaves your machine. The AI interprets — Python calculates.*
 
-[Features](#-key-features) • [Architecture](#-multi-agent-workflow) • [Tech Stack](#-tech-stack) • [Installation](#-installation--setup) • [Documentation](#-project-structure)
+[Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Installation](#-installation--setup) • [API Reference](#-api-reference)
 
 </div>
 
 ---
 
-## 🏆 Hackathon Submission (Monad Blitz Mumbai)
-
-| | |
-|---|---|
-| **Public repo** | <https://github.com/HORRIDBEAST/DecDemo> |
-| **Live app** | <https://dec-demo.vercel.app/> |
-| **Network** | Monad Testnet (chain ID `10143`) |
-| **Contract address** | [`0xF48A757f1187c45923e39b39c85692755A1DFF0D`](https://testnet.monadscan.com/address/0xF48A757f1187c45923e39b39c85692755A1DFF0D) (ClaimRegistry, source verified) |
-| **Deployment tx** | [`0x55c51f39…b63ce5`](https://testnet.monadscan.com/tx/0x55c51f39d1eb3d7586ed000130e3f336e9ca6b8ad2c9ad3ddd1778b50fb63ce5) |
-| **Explorer** | <https://testnet.monadscan.com> |
-| **Run it locally** | [Run It Yourself](#-run-it-yourself-from-scratch) |
-
-Every AI claim decision is written to the `ClaimRegistry` contract on Monad, so each claim gets a verifiable on-chain transaction.
-
----
-
 ## 📖 Overview
 
-**DecentralizedClaim** revolutionizes insurance claim processing by replacing opaque manual workflows with a transparent, verifiable, and fully automated system.  This platform combines cutting-edge AI agents with blockchain immutability to process claims in **under 2 minutes** while maintaining complete transparency.
+**WealthOS** is a privacy-first personal finance system that runs completely locally. It combines a deterministic financial engine with a grounded AI analyst — all your XIRR, CAGR, P&L, savings rate, and net worth calculations are done by verified Python code. The AI (Gemini) only interprets those pre-computed numbers and never makes financial calculations itself.
 
-Project Walkthough Youtube Viedo Link: [Youtube](https://www.youtube.com/watch?v=MfzmgfHc-Bs)
+### 🎯 The Problem it Solves
 
-### 🎯 The Problem it Solves:
+Traditional finance apps either:
+- Send your data to the cloud (privacy risk)
+- Use LLMs to calculate finances (hallucination risk — LLMs are bad at math)
+- Give you zero transparency into how numbers are computed
 
-Traditional insurance companies operate as "black boxes" where:
-- Claims take **weeks** to process
-- Decisions are **opaque** and unexplained
-- Manual review introduces **bias** and **human error**
-- Users have **zero visibility** into the decision-making process
+### ✨ The Solution
 
-### ✨ My Solution
+A **Grounded AI** architecture that:
+- Runs **100% locally** — no data ever leaves your machine
+- Computes all financial metrics in **verified Python** (XIRR, CAGR, WAVG cost basis, P&L)
+- Uses **Gemini** only to *interpret* those numbers, not calculate them
+- Imports real bank statements (HDFC, ICICI, Generic CSV formats)
+- Detects duplicate transactions, fraud patterns, and spending anomalies
 
-A **Multi-Agent AI system** orchestrated by **LangGraph** that:
-- Processes claims in **30-60 seconds**
-- Provides **real-time transparency** into AI reasoning
-- Stores decisions on the **Monad blockchain** for immutability
-- Uses **external data sources** (weather, market prices) to detect fraud
-- Offers **voice-first** claim filing for accessibility
-  
 ---
 
 ## 🚀 Key Features
 
-### 🧠 Autonomous Multi-Agent AI System
+### 🧠 Grounded AI Financial Analyst
 
-Four specialized agents work together in a **Directed Acyclic Graph (DAG)** to verify every aspect of a claim:
+The AI operates in a strict multi-step pipeline — it never touches raw data or runs math:
 
 <table>
 <tr>
 <td width="25%" align="center">
-<img src="https://img.icons8.com/fluency/96/document.png" width="64"/><br/>
-<b>📄 Document Agent</b><br/>
-<sub>Validates PDFs, invoices, police reports using OCR and LLM classification</sub>
+<b>🔢 Deterministic Engine</b><br/>
+<sub>Python computes XIRR (Newton-Raphson), WAVG cost basis, CAGR, P&L, savings rate with unit-tested precision</sub>
 </td>
 <td width="25%" align="center">
-<img src="https://img.icons8.com/fluency/96/camera.png" width="64"/><br/>
-<b>📷 Damage Agent</b><br/>
-<sub>Analyzes photos with OpenAI Vision & OpenCV to assess damage severity</sub>
+<b>🛠️ Tool Layer</b><br/>
+<sub>10 controlled retrieval functions expose structured JSON to the AI — no raw SQL, no direct DB access</sub>
 </td>
 <td width="25%" align="center">
-<img src="https://img.icons8.com/fluency/96/detective.png" width="64"/><br/>
-<b>🕵️ Fraud Agent</b><br/>
-<sub>Cross-checks weather data and market prices to catch anomalies</sub>
+<b>🤖 AI Interpretation</b><br/>
+<sub>Gemini 2.5 Flash receives JSON context and answers questions grounded strictly in the provided data</sub>
 </td>
 <td width="25%" align="center">
-<img src="https://img.icons8.com/fluency/96/money.png" width="64"/><br/>
-<b>💰 Settlement Agent</b><br/>
-<sub>Calculates fair payouts based on policy limits and damage assessment</sub>
+<b>📊 REST API</b><br/>
+<sub>40+ FastAPI endpoints covering accounts, transactions, portfolio, analytics, goals, and AI assistant</sub>
 </td>
 </tr>
 </table>
 
-### 🔗 Multi-Agent Workflow
+### 🔗 AI Agent Workflow
 
 ```mermaid
 graph TB
-    Start[User Submits Claim] --> DocAgent[📄 Document Agent]
-    DocAgent -->|Validates Documents| DamageAgent[📷 Damage Agent]
-    
-    DamageAgent -->|Analyzes Photos| FraudAgent[🕵️ Fraud Agent]
-    
-    FraudAgent -->|Weather Check| WeatherAPI[☁️ OpenWeather API]
-    FraudAgent -->|Price Check| TavilyAPI[🔍 Tavily Search API]
-    
-    WeatherAPI -->|Weather Data| FraudDecision{Fraud<br/>Detected?}
-    TavilyAPI -->|Market Prices| FraudDecision
-    
-    FraudDecision -->|High Risk| Reject[❌ Claim Rejected]
-    FraudDecision -->|Low Risk| SettlementAgent[💰 Settlement Agent]
-    
-    SettlementAgent -->|Calculate Payout| Blockchain[⛓️ Monad Blockchain]
-    Blockchain -->|Store Decision| Approve[✅ Claim Approved]
-    
-    Reject --> WebSocket[📡 WebSocket Notification]
-    Approve --> WebSocket
-    WebSocket --> User[👤 User Receives Decision]
-    
-    style DocAgent fill:#e3f2fd
-    style DamageAgent fill:#f3e5f5
-    style FraudAgent fill:#fff3e0
-    style SettlementAgent fill:#e8f5e9
-    style Blockchain fill:#fce4ec
-    style Approve fill:#c8e6c9
-    style Reject fill:#ffcdd2
+    User[User Query] --> Intent[Intent Classification]
+    Intent -->|spending / expense| SpendingTool[get_spending_analysis]
+    Intent -->|portfolio / XIRR / returns| PortfolioTool[get_portfolio_summary]
+    Intent -->|net worth / assets| NetWorthTool[get_net_worth_history]
+    Intent -->|goal / SIP / target| GoalTool[get_goal_progress]
+    Intent -->|anomaly / unusual| AnomalyTool[get_anomalies]
+
+    SpendingTool --> Context[JSON Context Assembly]
+    PortfolioTool --> Context
+    NetWorthTool --> Context
+    GoalTool --> Context
+    AnomalyTool --> Context
+
+    Context --> Gemini[Gemini 2.5 Flash]
+    Gemini -->|Grounded Response| Response[Structured JSON Answer]
+
+    style Gemini fill:#4285F4,color:#fff
+    style Context fill:#e8f5e9
+    style Response fill:#c8e6c9
 ```
 
-### ⛓️ Blockchain Immutability Layer
+### 💹 Financial Engine Capabilities
 
-- **Smart Contracts:** Written in **Solidity**, deployed on **Monad Testnet**
-- **Transparency:** Every decision (Approved/Rejected + AI reasoning) is hashed and stored on-chain
-- **Verification:** Users can verify their claim outcome on **Monadscan**
-- **Tamper-Proof:** Cryptographic guarantees prevent post-decision manipulation
+- **Cash Flow:** Income / Expenses / Savings Rate (transfers & debt payments excluded from expenses)
+- **Net Worth:** Assets − Liabilities, emergency fund coverage, liquid savings
+- **Portfolio:** XIRR (Newton-Raphson), WAVG cost basis, unrealized/realized P&L, CAGR, sector allocation
+- **Spending:** Category breakdowns, MoM trends, merchant normalization
+- **Anomaly Detection:** Threshold-based pattern detection for unusual spending
+- **Goals:** Progress tracking, SIP projections, required monthly savings
 
-### 🗣️ Voice-First Interface (Vapi.ai)
+### 📥 Multi-Format CSV Import
 
-- **Natural Language Filing:** Users describe incidents conversationally
-- **Auto-Form Filling:** Speech-to-text converts audio to structured claim data
-- **Accessibility:** Elderly and non-technical users can file claims without typing
+Supports real bank statement formats out of the box:
+- **HDFC Bank** — savings and credit card statements
+- **ICICI Bank** — statement exports
+- **Generic CSV** — configurable column mapping
 
-### ⚡ Real-Time "Glass Box" Experience
+Duplicate detection via transaction fingerprinting prevents double-imports.
 
-Unlike traditional insurance systems, users see exactly what the AI is thinking:
+### 🔒 Privacy First
 
-```
-🔍 Verifying policy documents...
-📸 Analyzing damage photos (3 uploaded)...
-☁️ Checking weather in Pune on 2025-01-15...
-💰 Calculating settlement based on policy limits...
-✅ Claim Approved: $4,500 payout authorized
-```
-
-**Technical Implementation:**
-- **Socket.io WebSockets** stream agent logs from Python (FastAPI) → NestJS → Next.js
-- Updates appear in real-time on the frontend dashboard
-
-### 🤖 Intelligent Support Chatbot
-
-An embedded AI assistant that serves as a personal concierge:
-
-**Features:**
-- **Contextual Modes:**
-  - **Support Mode:** Answers FAQs, explains fraud detection, navigates users to pages
-  - **Drafting Mode:** Helps users write professional claim descriptions on `/claims/new`
-- **Knowledge Base:** Covers claim process, tech stack, architecture, fraud detection, statuses
-- **Smart Navigation:** Can autonomously redirect users (e.g., "Take me to my dashboard")
-- **Interactive Actions:**
-  - Copy AI responses
-  - Insert drafted text into claim forms
-  - Refresh conversation history
-
-**Technical Stack:**
-- **Backend:** OpenAI GPT-4o-mini with function calling (search_knowledge, navigate_to_page)
-- **Frontend:** React state + fetch API (no Vercel AI SDK dependencies)
-- **UI:** Shadcn/ui components with floating and inline modes
-
-### 🧰 Model Context Protocol (MCP) Integration
-
-Custom MCP servers give agents "superpowers":
-
-1. **Weather Oracle:** Queries historical weather data to catch impossible scenarios (e.g., flood on sunny day)
-2. **Market Price Oracle:** Scrapes real-time repair costs via Tavily to detect inflated invoices
-3. **News Intelligence:** Auto-updating financial feed powered by Tavily API (no database required)
+- **Local-only by default** — SQLite, no cloud sync, no auth required for V1
+- No telemetry, no external API calls except Gemini for AI queries
+- PostgreSQL-ready for self-hosted multi-user setups
 
 ---
 
@@ -187,480 +122,371 @@ Custom MCP servers give agents "superpowers":
 
 ```mermaid
 graph LR
-    subgraph Client ["🖥️ Frontend (Next.js)"]
-        UI[User Interface]
-        Voice[🎤 Vapi.ai Voice]
-        Chatbot[💬 AI Chatbot]
+    subgraph Ingestion ["📥 Ingestion Layer"]
+        CSV[CSV Parser<br/>HDFC / ICICI / Generic]
+        Seeder[Demo Seeder<br/>12-month dataset]
     end
-    
-    subgraph Backend ["⚙️ Backend (NestJS)"]
-        API[REST API]
-        WS[WebSocket Gateway]
-        Auth[Supabase Auth]
+
+    subgraph Engine ["🔢 Deterministic Financial Engine"]
+        CF[cash_flow.py]
+        NW[net_worth.py]
+        PE[portfolio_engine.py<br/>XIRR · WAVG · P&L]
+        SP[spending.py]
+        AN[anomalies.py]
+        GO[goals_engine.py]
     end
-    
-    subgraph AI ["🧠 AI Service (Python/FastAPI)"]
-        LG[LangGraph Orchestrator]
-        Agents[Multi-Agent DAG]
-        MCP[MCP Tools]
+
+    subgraph AI ["🤖 AI Layer"]
+        Tools[Tool Layer<br/>financial_tools.py]
+        Agent[Financial Agent<br/>financial_agent.py]
+        Prompt[System Prompt<br/>Grounding Contract]
     end
-    
-    subgraph Data ["💾 Data Layer"]
-        DB[(Supabase PostgreSQL)]
-        Storage[Supabase Storage]
+
+    subgraph API ["⚙️ REST API (FastAPI)"]
+        Routes[40+ Endpoints]
     end
-    
-    subgraph Blockchain ["⛓️ Blockchain"]
-        Contract[Solidity Smart Contract]
-        Monad[Monad Testnet]
+
+    subgraph Frontend ["🖥️ Frontend (Next.js 15)"]
+        UI[Dashboard · Portfolio<br/>Spending · AI Assistant]
     end
-    
-    UI --> API
-    Voice --> API
-    Chatbot --> API
-    API --> Auth
-    API --> WS
-    API --> LG
-    WS --> UI
-    LG --> Agents
-    Agents --> MCP
-    Agents --> DB
-    Agents --> Storage
-    Agents --> Contract
-    Contract --> Monad
-    
-    style Client fill:#e3f2fd
-    style Backend fill:#fff3e0
+
+    CSV --> Engine
+    Seeder --> Engine
+    Engine --> Tools
+    Tools --> Agent
+    Prompt --> Agent
+    Agent --> Routes
+    Engine --> Routes
+    Routes --> UI
+
+    style Engine fill:#e3f2fd
     style AI fill:#f3e5f5
-    style Data fill:#e8f5e9
-    style Blockchain fill:#fce4ec
+    style Frontend fill:#e8f5e9
 ```
 
 ### Service Responsibilities
 
 | Service | Port | Responsibilities |
-|---------|------|------------------|
-| **Frontend** | 3000 | User interface, voice intake, real-time updates, chatbot UI |
-| **Backend** | 3001 | API orchestration, WebSocket events, Supabase integration |
-| **AI Service** | 8000 | AI agent execution, computer vision, fraud detection, MCP tools |
-| **Blockchain** | - | Immutable claim storage, smart contract execution |
+|---------|------|-----------------|
+| **Backend (FastAPI)** | 8000 | Financial engine, AI agent, REST API, CSV ingestion |
+| **Frontend (Next.js)** | 3000 | Dashboard, portfolio view, spending analysis, AI chat UI |
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend Layer
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Python** | 3.9+ | Core language |
+| **FastAPI** | 0.111+ | High-performance async REST API |
+| **SQLAlchemy 2** | 2.0+ | Async ORM with SQLite / PostgreSQL |
+| **Pydantic v2** | 2.7+ | Request/response validation |
+| **SciPy / NumPy** | latest | XIRR (Newton-Raphson), financial math |
+| **Pandas** | 2.2+ | CSV parsing and data manipulation |
+| **aiosqlite** | 0.20+ | Async SQLite driver |
+| **Uvicorn** | 0.29+ | ASGI server |
+
+### AI
 | Technology | Purpose |
 |------------|---------|
-| **Next.js 14** | React framework with App Router for file-based routing |
+| **Gemini 2.5 Flash** | Grounded LLM interpretation via REST API |
+| **google-generativeai** | Python SDK for Gemini |
+| **Custom Tool Layer** | 10 controlled data-retrieval functions |
+
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **Next.js 15** | React framework with App Router |
 | **TypeScript** | Type-safe development |
-| **Tailwind CSS** | Utility-first styling |
-| **Shadcn/ui** | Accessible component library |
-| **Vapi.ai SDK** | Voice interface integration |
-| **Socket.io Client** | Real-time WebSocket communication |
-| **Framer Motion** | Smooth animations |
-
-### Backend Layer
-| Technology | Purpose |
-|------------|---------|
-| **NestJS** | Scalable microservices framework |
-| **Socket.io** | WebSocket server for real-time events |
-| **Supabase Client** | Database and authentication |
-| **Ethers.js** | Blockchain interaction |
-
-### AI Engine
-| Technology | Purpose |
-|------------|---------|
-| **Python 3.10+** | Core language |
-| **FastAPI** | High-performance async API framework |
-| **LangGraph** | Multi-agent orchestration (DAG workflow) |
-| **OpenAI GPT-4o** | Document classification and LLM reasoning |
-| **OpenAI Vision** | Image analysis for damage assessment |
-| **OpenCV** | Computer vision preprocessing |
-| **Tavily API** | Web search for market price verification |
-| **Open-Meteo API** | Historical weather data |
-
-### Blockchain
-| Technology | Purpose |
-|------------|---------|
-| **Solidity 0.8.20** | Smart contract language |
-| **Hardhat** | Development environment and testing |
-| **Monad Testnet** | High-throughput EVM chain (chain ID 10143) |
-| **Monadscan** | Blockchain explorer for verification |
 
 ### Database & Storage
 | Technology | Purpose |
 |------------|---------|
-| **Supabase (PostgreSQL)** | Relational data (users, claims, policies) |
-| **Supabase Auth** | User authentication with RLS |
-| **Supabase Storage** | Encrypted file storage (GDPR compliant) |
+| **SQLite** | Default local database (zero config) |
+| **PostgreSQL** | Production / multi-user option |
+| **Alembic** | Database migrations |
 
 ---
 
-## 📦 Run It Yourself (from scratch)
+## 📦 Installation & Setup
 
-Everything below runs locally on Windows, macOS or Linux. You will start **three services** (AI, Backend, Frontend) that talk to one **smart contract already deployed on Monad Testnet**.
-
-### 0. Prerequisites
+### Prerequisites
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Node.js | 20+ (22 recommended) | Frontend, Backend, Hardhat |
-| Python | 3.10+ | AI service |
-| Tesseract OCR | any recent | Required by the Document Agent (`pytesseract`). Windows: [installer](https://github.com/UB-Mannheim/tesseract/wiki) · macOS: `brew install tesseract` · Linux: `apt install tesseract-ocr` |
-| Poppler | any recent | Required to OCR PDFs. Windows: [poppler releases](https://github.com/oschwartz10612/poppler-windows/releases) (add `bin` to PATH) · macOS: `brew install poppler` · Linux: `apt install poppler-utils` |
-| Supabase project | free tier | Database, auth and file storage ([sign up](https://supabase.com)) |
-| OpenAI API key | | LLM + vision ([get one](https://platform.openai.com/api-keys)) |
-| Tavily API key | | Market-price search ([get one](https://tavily.com)) |
-| Monad Testnet wallet | | Signs the on-chain transactions (step 5 shows how to fund one) |
-
-> The contract in the table at the top is owned by the project's wallet. To run the app independently, deploy your **own** copy (step 5, about 2 minutes) and use your own wallet key everywhere below.
+| Python | 3.9+ | Backend & financial engine |
+| Node.js | 18+ | Frontend |
+| uv | latest | Python package manager (recommended) |
+| Gemini API Key | — | Only needed for AI assistant ([get one free](https://aistudio.google.com/)) |
 
 ### 1. Clone
 
 ```bash
-git clone https://github.com/HORRIDBEAST/DecDemo.git
-cd DecDemo
+git clone https://github.com/aftermoon07/WealthOS.git
+cd WealthOS
 ```
 
-### 2. Supabase setup (one time)
-
-Create a Supabase project, then in the dashboard:
-
-1. **Tables:** `users`, `claims`, `notifications`, `reviews`. The backend reads and writes these by name.
-2. **Storage:** create two public buckets named exactly `Claims-Documents` and `Claims-photos`.
-3. **Project Settings → API:** copy the Project URL, the `anon` key, the `service_role` key and the JWT secret. You will paste them into the `.env` files below.
-
-### 3. Smart contract on Monad Testnet
-
-Skip this only if you already have a `CONTRACT_ADDRESS` and the wallet key that owns it.
+### 2. Backend Setup (FastAPI, port 8000)
 
 ```bash
-cd Block
+cd backend
+
+# Using uv (recommended)
+uv sync
+
+# OR using pip
+pip install -e ".[test]"
+```
+
+Create `backend/.env`:
+
+```env
+DATABASE_URL=sqlite+aiosqlite:///./finance.db
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+MARKET_DATA_SOURCE=DEMO
+APP_ENV=development
+```
+
+Start the backend:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Check: [http://localhost:8000/api/health](http://localhost:8000/api/health) returns `{"status": "ok"}`.
+
+Interactive API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 3. Seed Demo Data (optional but recommended)
+
+```bash
+curl -X POST http://localhost:8000/api/demo/seed
+```
+
+This seeds **12 months of realistic financial data** — transactions, investments, goals — so you can explore every feature immediately.
+
+### 4. Frontend Setup (Next.js, port 3000)
+
+```bash
+cd frontend
 npm install
-```
-
-Create `Block/.env`:
-
-```env
-PRIVATE_KEY=0x...
-WEB3_PROVIDER_URL=https://testnet-rpc.monad.xyz
-```
-
-1. **Get testnet MON:** open <https://faucet.monad.xyz>, paste the wallet address for your `PRIVATE_KEY`, and claim.
-2. **Check the balance:** `npx hardhat run scripts/check-wallet.js --network monadTestnet`
-3. **Deploy:** `npm run deploy:monad` prints `ClaimRegistry deployed to: 0x...`. The script also authorizes the deployer as an AI agent, so no extra role setup is needed.
-4. **Keep the printed address.** You will use it as `CONTRACT_ADDRESS` in steps 4 and 5.
-5. **Verify the source (optional):** `npx hardhat verify --network monadTestnet <contract> <deployer-address>`. It may print a `chainid` warning while still succeeding, so check the explorer.
-
-Network details: Chain ID `10143` · RPC `https://testnet-rpc.monad.xyz` · Explorer <https://testnet.monadscan.com> · Currency MON. The contract compiles with Solidity 0.8.30 for the `osaka` EVM.
-
-### 4. AI service (Python / FastAPI, port 8000)
-
-```bash
-cd AI-Agents
-python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # macOS / Linux
-pip install -r requirements.txt
-cp .env.example .env           # Windows: copy .env.example .env
-```
-
-Fill in `AI-Agents/.env`:
-
-```env
-OPENAI_API_KEY=sk-...
-TAVILY_API_KEY=tvly-...
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-WEB3_PROVIDER_URL=https://testnet-rpc.monad.xyz
-CONTRACT_ADDRESS=0x...         # from step 3
-PRIVATE_KEY=0x...              # the wallet that deployed CONTRACT_ADDRESS
-```
-
-Start it:
-
-```bash
-uvicorn src.main:app --reload --port 8000
-```
-
-Check: <http://localhost:8000/health> returns `{"status":"healthy",...}`.
-
-### 5. Backend (NestJS, port 3001)
-
-```bash
-cd Backend
-npm install
-```
-
-Create `Backend/.env`:
-
-```env
-PORT=3001
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-SUPABASE_JWT_SECRET=your_jwt_secret
-AI_AGENTS_URL=http://localhost:8000
-WEB3_PROVIDER_URL=https://testnet-rpc.monad.xyz
-CONTRACT_ADDRESS=0x...         # from step 3
-PRIVATE_KEY=0x...              # same wallet as the AI service
-TAVILY_API_KEY=tvly-...
-CORS_ORIGINS=http://localhost:3000
-```
-
-```bash
-npm run start:dev
-```
-
-### 6. Frontend (Next.js, port 3000)
-
-```bash
-cd front
-npm install
-```
-
-Create `front/.env.local`:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-NEXT_PUBLIC_API_URL=http://localhost:3001
-OPENAI_API_KEY=sk-...                      # chatbot
-NEXT_PUBLIC_VAPI_PUBLIC_KEY=               # optional: voice claim filing
-NEXT_PUBLIC_VAPI_ASSISTANT_ID=             # optional: voice claim filing
-```
-
-```bash
 npm run dev
 ```
 
-### 7. Try it
-
-1. Open <http://localhost:3000> and **sign up** with an email and password.
-2. Go to **New Claim**, fill in the type, amount, date, location and description, and **upload a document and a damage photo**.
-3. Submit the claim for AI processing and watch the agents' live log stream.
-4. When it finishes, open the claim and click **AI Assessment** to see your transaction on [testnet.monadscan.com](https://testnet.monadscan.com).
-5. You can also paste that transaction hash into the **/verify** page.
-
-**What to expect:** a claim from a brand-new user with a consistent document and photo should come back `PRE_APPROVED`. Mismatched amounts, dates, document types or weather come back `REQUIRES_HUMAN_REVIEW`, and a photo that clearly does not match the claim comes back `REJECTED_FRAUD`.
-
-### Troubleshooting
-
-| Symptom | Fix |
-|---------|-----|
-| `Blockchain connection failed` in the AI logs | Check `WEB3_PROVIDER_URL=https://testnet-rpc.monad.xyz` |
-| `Not authorized agent` or `OwnableUnauthorizedAccount` | `PRIVATE_KEY` must be the wallet that deployed `CONTRACT_ADDRESS` |
-| `insufficient funds` | Claim more MON at the faucet |
-| PDF documents fail OCR | Install Poppler and make sure it is on your PATH |
-| Frontend shows network errors | The backend must be on port 3001 and `CORS_ORIGINS` must include `http://localhost:3000` |
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
 ## 📂 Project Structure
 
 ```
-DecentralizedClaim/
-├── 📁 front/                    # Next.js Frontend
+WealthOS/
+├── 📁 backend/
 │   ├── app/
-│   │   ├── (auth)/             # Authentication pages
-│   │   ├── (dashboard)/        # Dashboard pages
-│   │   │   ├── claims/
-│   │   │   │   └── new/        # Claim creation with AI drafting
-│   │   ├── api/
-│   │   │   └── chat/           # Chatbot API route
-│   │   └── layout.tsx          # Root layout with floating chatbot
-│   ├── components/
-│   │   ├── layout/
-│   │   │   └── support-bot.tsx # AI Chatbot component
-│   │   ├── claims/             # Claim-related components
-│   │   └── ui/                 # Shadcn/ui components
-│   └── lib/
-│       ├── api.ts              # API client
-│       └── supabase.ts         # Supabase client
+│   │   ├── main.py                        # FastAPI entrypoint
+│   │   ├── core/config.py                 # Settings (env-based)
+│   │   ├── db/database.py                 # Async SQLAlchemy engine
+│   │   ├── models/models.py               # ORM models
+│   │   ├── schemas/schemas.py             # Pydantic request/response
+│   │   ├── api/routes/routes.py           # All REST routes (40+ endpoints)
+│   │   └── services/
+│   │       ├── domain/
+│   │       │   ├── finance/               # cash_flow.py, net_worth.py
+│   │       │   ├── portfolio/             # portfolio_engine.py (XIRR, P&L)
+│   │       │   ├── analytics/             # spending.py, anomalies.py
+│   │       │   ├── transactions/          # categorization.py
+│   │       │   └── goals/                 # goals_engine.py
+│   │       ├── ai/
+│   │       │   ├── tools/financial_tools.py   # 10 controlled tool functions
+│   │       │   ├── agent/financial_agent.py   # Agent orchestration
+│   │       │   └── prompts/system_prompt.py   # Grounding contract
+│   │       └── ingestion/
+│   │           ├── csv_parser.py              # HDFC / ICICI / Generic CSV
+│   │           └── demo_seeder.py             # 12-month demo dataset
+│   └── tests/
+│       └── test_domain.py                 # 46 domain unit tests
 │
-├── 📁 Backend/                  # NestJS Backend
-│   ├── src/
-│   │   ├── claims/             # Claims module
-│   │   ├── auth/               # Authentication module
-│   │   ├── blockchain/         # Blockchain integration
-│   │   ├── websocket/          # WebSocket gateway
-│   │   └── ai-agents/          # AI service integration
-│   └── nest-cli.json
-│
-├── 📁 AI-Agents/                # Python AI Service
-│   ├── src/
-│   │   ├── agents/
-│   │   │   ├── document_agent.py
-│   │   │   ├── damage_agent.py
-│   │   │   ├── fraud_agent.py
-│   │   │   └── settlement_agent.py
-│   │   ├── workflows/
-│   │   │   └── claim_workflow.py  # LangGraph DAG
-│   │   ├── models/
-│   │   │   └── claim_models.py
-│   │   └── main.py             # FastAPI entry point
-│   └── requirements.txt
-│
-└── 📁 Block/                    # Blockchain
-    ├── contracts/
-    │   └── ClaimRegistry.sol   # Solidity smart contract
-    ├── scripts/
-    │   ├── deploy.js
-    │   └── submit-claim.js
-    └── hardhat.config.js
+└── 📁 frontend/
+    ├── app/                               # Next.js App Router pages
+    ├── components/                        # UI components
+    └── lib/api.ts                         # Typed API client
 ```
 
 ---
 
-## 🧪 Testing Fraud Detection (Edge Cases)
+## 📊 Data Models
 
-### 1. 🌦️ The "Phantom Storm" (Weather Fraud)
+### Transaction Types
+| Type | Counted As |
+|------|-----------|
+| `INCOME` | Income ✅ |
+| `EXPENSE` | Expense ✅ |
+| `DIVIDEND` | Income ✅ |
+| `REFUND` | Reduces Income |
+| `TRANSFER` | **Excluded** — prevents double counting |
+| `DEBT_PAYMENT` | **Excluded** — credit card repayments |
+| `INVESTMENT_BUY` | Investment contribution (not expense) |
+| `INVESTMENT_SELL` | Tracked separately |
 
-**Scenario:** File a flood damage claim on a date with clear skies.
+### Financial Calculation Reference
 
-**Steps:**
-1. Go to `/claims/new`
-2. Select **Home Insurance** → **Flood**
-3. Set date: **January 15, 2025**
-4. Location: **Pune, India**
-5. Description: "Basement flooded due to heavy rain"
-6. Submit
-
-**Expected Result:**
 ```
-🕵️ Fraud Agent detected:
-☁️ Weather Check: 0mm rainfall on 2025-01-15 in Pune
-❌ Claim REJECTED: Weather data contradicts flood claim
-```
+Cash Flow:
+  Income = Σ(INCOME) + Σ(DIVIDEND) - Σ(REFUND)
+  Expenses = Σ(EXPENSE)  [NOT TRANSFER, DEBT_PAYMENT, INVESTMENT_BUY]
+  Savings = Income - Expenses
+  Savings Rate = Savings / Income × 100
 
----
+Net Worth:
+  Total Assets = bank balances + portfolio_value + FD/PF
+  Total Liabilities = loan_outstanding + cc_outstanding
+  Net Worth = Total Assets - Total Liabilities
 
-### 2. 💸 The "Price Inflator" (Market Price Fraud)
-
-**Scenario:** Request an inflated payout for minor damage.
-
-**Steps:**
-1. File an **Auto claim** for "Cracked Side Mirror"
-2. Request amount: **$5,000**
-3. Upload photo of minor crack
-
-**Expected Result:**
-```
-🕵️ Fraud Agent detected:
-🔍 Market Price Check: Side mirror replacement = $50-$150
-📊 Requested Amount: $5,000 (3,333% markup)
-⚠️ Claim flagged as HIGH RISK - Manual review required
+Portfolio (WAVG Cost Basis):
+  Avg Cost = Σ(buy_qty × buy_price) / Σ(buy_qty)
+  Unrealized P&L = (Current Price - Avg Cost) × Current Qty
+  XIRR = Newton-Raphson on cash flow timeline
+  CAGR = (End / Start)^(1/years) - 1
 ```
 
 ---
 
-### 3. 📅 The "Time Traveler" (Document Validation)
+## 🤖 AI Agent Design
 
-**Scenario:** Upload an invoice dated before the accident.
+### Grounding Contract
 
-**Steps:**
-1. Accident Date: **January 20, 2025**
-2. Upload repair invoice dated: **January 10, 2025**
+The AI never sees raw database data. It receives a strictly typed JSON payload:
 
-**Expected Result:**
-```
-📄 Document Agent detected:
-❌ Chronological inconsistency: Invoice dated 10 days before accident
-🚩 Claim flagged for HUMAN REVIEW: Invalid documentation
-```
-
----
-
-## 🤖 Chatbot Testing Guide
-
-### Support Mode (Floating Button)
-
-Click the **floating chatbot button** (bottom-right) and try:
-
-**Knowledge Base Queries:**
-- "How do I file a claim?"
-- "What is the tech stack?"
-- "Who created this project?"
-- "How does fraud detection work?"
-- "What language are smart contracts written in?" → Answer: **Solidity**
-
-**Navigation:**
-- "Take me to the dashboard"
-- "Navigate to help center"
-- "Go to reviews"
-
-### Drafting Mode (Inline Assistant)
-
-On `/claims/new`, click **AI Help** button:
-
-**Claim Drafting:**
-- "Help me describe a car accident"
-- "My roof was damaged in a storm"
-
-The bot will ask clarifying questions and help structure professional descriptions.
-
----
-
-## 🎨 Features Showcase
-
-### Real-Time Event Stream
-
-```typescript
-// WebSocket event example
+```json
 {
-  "event": "agent_update",
-  "data": {
-    "agent": "fraud_agent",
-    "status": "checking_weather",
-    "message": "☁️ Verifying weather in Pune on 2025-01-15...",
-    "timestamp": "2025-01-27T10:30:45Z"
+  "financial_summary": {
+    "income": 85000,
+    "expenses": 42000,
+    "savings_rate": 50.6
+  },
+  "portfolio_summary": {
+    "xirr": 20.99,
+    "unrealized_pnl": 48500,
+    "holdings": [...]
   }
 }
 ```
 
-### Blockchain Transaction
+The system prompt explicitly prohibits: hallucinating numbers, calculating returns independently, providing advice not supported by the data.
 
-```solidity
-// ClaimRegistry.sol
-event ClaimRecorded(
-    uint256 indexed claimId,
-    address indexed submitter,
-    string decisionHash,
-    uint256 amount,
-    bool approved
-);
-```
+### Confidence Levels
 
-**Verify on Monadscan:**
-```
-https://testnet.monadscan.com/tx/0x...
-```
+| Level | Meaning |
+|-------|---------|
+| `HIGH` | All relevant data available, no missing prices, full history |
+| `MEDIUM` | Partial data or missing market prices |
+| `LOW` | Missing tool data or model error |
+
+### Available AI Tools
+
+| Tool | Returns |
+|------|---------|
+| `get_financial_summary` | Income, expenses, savings rate |
+| `get_spending_analysis` | Category breakdowns, MoM trends |
+| `get_portfolio_summary` | XIRR, realized/unrealized P&L |
+| `get_holdings` | Detailed asset positions |
+| `get_asset_allocation` | Asset classes and sectors |
+| `get_portfolio_risk` | Concentration and volatility metrics |
+| `get_goal_progress` | Progress toward financial targets |
+| `get_net_worth_history` | Historical net worth tracking |
+| `get_anomalies` | Flagged unusual spending patterns |
+| `get_monthly_comparison` | Month-over-month comparison |
 
 ---
 
-## 🚦 API Endpoints
+## 🚦 API Reference
 
-### Backend (NestJS) - Port 3001
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/claims` | Submit a new claim |
-| GET | `/api/claims/:id` | Get claim details |
-| GET | `/api/claims/user/:userId` | Get user's claims |
-| POST | `/api/auth/login` | User authentication |
-| WS | `/ws/claim-updates` | WebSocket for real-time updates |
-
-### AI Service (FastAPI) - Port 8000
+### Core Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/claims/process` | Process claim with AI agents |
 | GET | `/api/health` | Health check |
-| POST | `/api/vision/analyze` | Standalone damage analysis |
+| POST | `/api/demo/seed` | Seed 12-month demo dataset |
+
+### Accounts & Transactions
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/accounts` | List all accounts |
+| POST | `/api/accounts` | Create account |
+| GET | `/api/transactions` | List transactions (filterable) |
+| PATCH | `/api/transactions/{id}` | Update category / description |
+
+### Analytics
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/analytics/cash-flow` | Monthly income, expenses, savings |
+| GET | `/api/analytics/net-worth` | Current net worth snapshot |
+| GET | `/api/analytics/net-worth/history` | Net worth over time |
+| GET | `/api/analytics/spending` | Spending breakdown + trends |
+| GET | `/api/analytics/anomalies` | Detected anomalies |
+
+### Portfolio
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/portfolio/summary` | XIRR, P&L, portfolio metrics |
+| GET | `/api/portfolio/holdings` | Current holdings with prices |
+| GET | `/api/portfolio/allocation` | Asset + sector allocation |
+| GET | `/api/portfolio/risk` | Risk dimensions |
+
+### Goals & Import
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/goals` | All financial goals |
+| POST | `/api/goals` | Create goal |
+| GET | `/api/goals/analysis` | Goal projections and SIP requirements |
+| POST | `/api/import/csv` | Upload bank statement CSV |
+
+### AI & Dashboard
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/assistant/query` | Ask the AI financial analyst |
+| GET | `/api/dashboard` | Aggregated dashboard data |
+| GET | `/api/reports/monthly` | Full monthly report |
+
+---
+
+## 🧪 Testing
+
+```bash
+cd backend
+pytest tests/ -v
+```
+
+**46 unit tests across:**
+
+| Test Suite | Tests | Covers |
+|-----------|-------|--------|
+| `TestCashFlow` | 10 | Double-counting invariants, savings rate |
+| `TestPortfolioEngine` | 13 | XIRR, WAVG, P&L, allocation, concentration |
+| `TestCategorization` | 7 | Merchant normalization, rule matching |
+| `TestCSVParser` | 6 | Dedup, format detection, invalid rows |
+| `TestNetWorth` | 5 | Assets, liabilities, emergency fund |
+| `TestAnomalyDetection` | 3 | Threshold-based detection |
+| `TestFinancialInvariants` | 2 | System-wide financial invariants |
 
 ---
 
 ## 🔧 Development Commands
+
+### Backend
+
+```bash
+uvicorn app.main:app --reload          # Start with hot reload
+pytest tests/ -v                        # Run all tests
+pytest tests/ -v -k "TestPortfolio"    # Run specific suite
+```
 
 ### Frontend
 
@@ -668,123 +494,50 @@ https://testnet.monadscan.com/tx/0x...
 npm run dev          # Start dev server
 npm run build        # Production build
 npm run lint         # Run ESLint
-npm run format       # Format with Prettier
-```
-
-### Backend
-
-```bash
-npm run start:dev    # Start in watch mode
-npm run build        # Compile TypeScript
-npm test             # Run tests
-```
-
-### AI Service
-
-```bash
-uvicorn src.main:app --reload  # Start with hot reload
-pytest tests/                  # Run tests
-python -m black src/           # Format code
-```
-
-### Blockchain
-
-```bash
-npx hardhat compile             # Compile contracts
-npx hardhat test                # Run tests
-npx hardhat node                # Start local node
-npx hardhat run scripts/deploy.js --network monadTestnet
 ```
 
 ---
 
-## 📊 Performance Metrics
+## ⚙️ Configuration
 
-| Metric | Value |
-|--------|-------|
-| Average Claim Processing Time | **45 seconds** |
-| AI Accuracy (Fraud Detection) | **94.2%** |
-| False Positive Rate | **<5%** |
-| Blockchain Tx Confirmation | **~1 second** (Monad, 400 ms blocks) |
-| WebSocket Latency | **<100ms** |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `sqlite+aiosqlite:///./finance.db` | Database connection string |
+| `GEMINI_API_KEY` | *(required for AI)* | Gemini API key |
+| `GEMINI_MODEL` | `gemini-2.5-flash` | LLM model |
+| `MARKET_DATA_SOURCE` | `DEMO` | Price source: `DEMO` / `MANUAL` / `API_FETCH` |
+| `APP_ENV` | `development` | Environment |
 
 ---
 
 ## 🛣️ Roadmap
 
-- [x] Multi-Agent AI workflow
-- [x] Blockchain integration
-- [x] Voice interface (Vapi.ai)
-- [x] Real-time WebSocket updates
-- [x] AI Chatbot with knowledge base
-- [ ] Mobile app (React Native)
-- [ ] Multi-language support (i18n)
-- [ ] Advanced analytics dashboard
-- [ ] Machine learning model training UI
-- [ ] Integration with real insurance APIs
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how:
-
-### Fork & Clone
-
-```bash
-git clone https://github.com/yourusername/DecDemo.git
-cd DecDemo
-git checkout -b feature/amazing-feature
-```
-
-### Code Style
-
-- **Frontend:** ESLint + Prettier (auto-format on save)
-- **Backend:** ESLint (NestJS standard)
-- **Python:** Black formatter + Flake8 linter
-
-### Commit Convention
-
-```bash
-git commit -m "feat: add voice transcription caching"
-git commit -m "fix: resolve WebSocket reconnection issue"
-git commit -m "docs: update API documentation"
-```
-
-**Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
-### Pull Request
-
-1. Ensure all tests pass
-2. Update documentation if needed
-3. Describe changes in PR description
-4. Link related issues
+- [x] Deterministic financial engine (XIRR, WAVG, P&L, CAGR)
+- [x] Grounded AI analyst (Gemini + Tool Layer)
+- [x] Multi-format CSV import (HDFC, ICICI, Generic)
+- [x] Duplicate transaction detection
+- [x] 46 unit tests
+- [x] Demo dataset seeder
+- [ ] PostgreSQL support for multi-user
+- [ ] Real-time market price fetching
+- [ ] Mobile-responsive frontend
+- [ ] Export to PDF reports
+- [ ] Budget alerts & notifications
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
 
 ---
 
-## 👨💻 Author
+## 👨‍💻 Author
 
-**Rajas Deshpande**
+**Aditya Suryawanshi**
 
-- GitHub: [@HORRIDBEAST](https://github.com/HORRIDBEAST)
-- Project Link: [DecDemo](https://github.com/HORRIDBEAST/DecDemo)
-
----
-
-## 🙏 Acknowledgments
-
-- **OpenAI** - GPT-4o and Vision API
-- **LangChain/LangGraph** - Multi-agent orchestration
-- **Monad** - High-performance EVM blockchain
-- **Supabase** - Backend-as-a-Service
-- **Vapi.ai** - Voice interface technology
-- **Shadcn/ui** - Beautiful component library
+- GitHub: [@aftermoon07](https://github.com/aftermoon07)
+- Project Link: [WealthOS](https://github.com/aftermoon07/WealthOS)
 
 ---
 
@@ -792,6 +545,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ### ⭐ If you found this project helpful, please give it a star!
 
-**Made with ❤️ by Rajas Deshpande**
+**Made with ❤️ by Aditya Suryawanshi**
 
 </div>
