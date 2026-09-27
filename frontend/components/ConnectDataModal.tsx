@@ -40,7 +40,8 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
           window.location.reload();
         }, 2000);
       } else {
-        setSyncResult({ status: 'error', message: data.detail || 'Failed to sync data' });
+        const errorMsg = Array.isArray(data.detail) ? data.detail.map((d: any) => d.msg).join(', ') : (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail) || 'Failed to sync data');
+        setSyncResult({ status: 'error', message: errorMsg });
       }
     } catch (err: any) {
       setSyncResult({ status: 'error', message: err.message || 'Network error occurred' });
@@ -78,7 +79,8 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
         });
         setTimeout(() => window.location.reload(), 2000);
       } else {
-        setSyncResult({ status: 'error', message: data.detail || 'Failed to import CSV' });
+        const errorMsg = Array.isArray(data.detail) ? data.detail.map((d: any) => d.msg).join(', ') : (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail) || 'Failed to import CSV');
+        setSyncResult({ status: 'error', message: errorMsg });
       }
     } catch (err: any) {
       setSyncResult({ status: 'error', message: err.message || 'Upload failed' });

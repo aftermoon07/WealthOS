@@ -50,6 +50,7 @@ RULES (strictly follow all):
 6. Use factual, measured language. Do NOT use alarming language for minor anomalies.
 7. Present information to help the user make informed decisions — do NOT make decisions for them.
 8. When confidence is marked LOW or MEDIUM, acknowledge the limitation in your response.
+9. ALWAYS format monetary values in Indian Rupees (INR, ₹). NEVER use Dollars ($) or other currencies.
 
 RESPONSE FORMAT:
 Always respond with valid JSON in this exact structure:

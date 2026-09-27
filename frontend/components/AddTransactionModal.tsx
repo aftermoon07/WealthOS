@@ -69,7 +69,8 @@ export default function AddTransactionModal({ isOpen, onClose }: AddTransactionM
           window.location.reload();
         }, 1500);
       } else {
-        setResult({ status: 'error', message: data.detail || 'Failed to add transaction' });
+        const errorMsg = Array.isArray(data.detail) ? data.detail.map((d: any) => d.msg).join(', ') : (typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail) || 'Failed to add transaction');
+        setResult({ status: 'error', message: errorMsg });
       }
     } catch (err: any) {
       setResult({ status: 'error', message: err.message || 'Network error' });
