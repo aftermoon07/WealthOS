@@ -20,17 +20,24 @@ export default function AddTransactionModal({ isOpen, onClose }: AddTransactionM
     transaction_type: 'EXPENSE'
   });
 
+  const [showNewAccount, setShowNewAccount] = useState(false);
+  const [newAccountData, setNewAccountData] = useState({ name: '', type: 'SAVINGS' });
+
+  const fetchAccounts = () => {
+    fetch('/api/accounts')
+      .then(res => res.json())
+      .then(data => {
+        setAccounts(data);
+        if (data.length > 0 && !formData.account_id) {
+          setFormData(prev => ({ ...prev, account_id: data[0].id.toString() }));
+        }
+      })
+      .catch(console.error);
+  };
+
   useEffect(() => {
     if (isOpen) {
-      fetch('/api/accounts')
-        .then(res => res.json())
-        .then(data => {
-          setAccounts(data);
-          if (data.length > 0 && !formData.account_id) {
-            setFormData(prev => ({ ...prev, account_id: data[0].id.toString() }));
-          }
-        })
-        .catch(console.error);
+      fetchAccounts();
     }
   }, [isOpen]);
 
@@ -110,18 +117,76 @@ export default function AddTransactionModal({ isOpen, onClose }: AddTransactionM
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label className="type-body-sm text-secondary">Account</label>
-            <select 
-              value={formData.account_id}
-              onChange={e => setFormData({...formData, account_id: e.target.value})}
-              required
-              style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
-            >
-              <option value="" disabled>Select Account</option>
-              {accounts.map(acc => (
-                <option key={acc.id} value={acc.id}>{acc.name} ({acc.account_type})</option>
-              ))}
-            </select>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="type-body-sm text-secondary">Account</label>
+              <button 
+                type="button" 
+                onClick={() => setShowNewAccount(!showNewAccount)}
+                style={{ background: 'none', border: 'none', color: 'var(--brand-primary)', cursor: 'pointer', fontSize: '0.875rem' }}
+              >
+                {showNewAccount ? 'Cancel' : '+ New Account'}
+              </button>
+            </div>
+            
+            {showNewAccount ? (
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input 
+                  type="text" 
+                  placeholder="Account Name"
+                  value={newAccountData.name}
+                  onChange={e => setNewAccountData({...newAccountData, name: e.target.value})}
+                  style={{ flex: 2, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                />
+                <select 
+                  value={newAccountData.type}
+                  onChange={e => setNewAccountData({...newAccountData, type: e.target.value})}
+                  style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                >
+                  <option value="SAVINGS">Savings</option>
+                  <option value="CREDIT_CARD">Credit Card</option>
+                  <option value="CASH">Cash</option>
+                </select>
+                <button 
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={async () => {
+                    if (!newAccountData.name) return;
+                    setLoading(true);
+                    try {
+                      const res = await fetch('/api/accounts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: newAccountData.name, account_type: newAccountData.type, currency: 'INR' })
+                      });
+                      const data = await res.json();
+                      if (res.ok) {
+                        setAccounts([...accounts, data]);
+                        setFormData({...formData, account_id: data.id.toString()});
+                        setShowNewAccount(false);
+                        setNewAccountData({ name: '', type: 'SAVINGS' });
+                      }
+                    } catch (e) {
+                      console.error(e);
+                    }
+                    setLoading(false);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            ) : (
+              <select 
+                value={formData.account_id}
+                onChange={e => setFormData({...formData, account_id: e.target.value})}
+                required
+                style={{ padding: '0.75rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+              >
+                <option value="" disabled>Select Account</option>
+                {accounts.map(acc => (
+                  <option key={acc.id} value={acc.id}>{acc.name} ({acc.account_type})</option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

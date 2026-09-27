@@ -11,6 +11,11 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<{status: 'success' | 'error' | null, message: string}>({ status: null, message: '' });
 
+  // CSV Upload State
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [parserType, setParserType] = useState<string>('generic');
+  const [uploading, setUploading] = useState(false);
+
   if (!isOpen) return null;
 
   const handleSyncAngelOne = async () => {
@@ -41,6 +46,44 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
       setSyncResult({ status: 'error', message: err.message || 'Network error occurred' });
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const handleCsvUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!csvFile) return;
+
+    setUploading(true);
+    setSyncResult({ status: null, message: '' });
+
+    const formData = new FormData();
+    formData.append('file', csvFile);
+    
+    // Default account_id for now, can be improved to select an account
+    formData.append('account_id', '1'); 
+    formData.append('parser_type', parserType);
+
+    try {
+      const res = await fetch('/api/import/csv', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        setSyncResult({ 
+          status: 'success', 
+          message: `Successfully imported ${data.transactions_imported} transactions.` 
+        });
+        setTimeout(() => window.location.reload(), 2000);
+      } else {
+        setSyncResult({ status: 'error', message: data.detail || 'Failed to import CSV' });
+      }
+    } catch (err: any) {
+      setSyncResult({ status: 'error', message: err.message || 'Upload failed' });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -98,6 +141,47 @@ export default function ConnectDataModal({ isOpen, onClose }: ConnectDataModalPr
             </div>
             <button className="btn btn-secondary" disabled>Connect</button>
           </div>
+          
+          <hr style={{ borderColor: 'var(--border-color)', margin: '1rem 0' }} />
+
+          {/* CSV Upload Section */}
+          <div>
+            <h3 className="heading-4" style={{ marginBottom: '1rem' }}>Upload Bank Statement (CSV)</h3>
+            <form onSubmit={handleCsvUpload} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                  <label className="type-body-sm text-secondary">Bank / Format</label>
+                  <select 
+                    value={parserType}
+                    onChange={e => setParserType(e.target.value)}
+                    style={{ padding: '0.5rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                  >
+                    <option value="generic">Generic CSV</option>
+                    <option value="hdfc">HDFC Bank</option>
+                    <option value="icici">ICICI Bank</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 2 }}>
+                  <label className="type-body-sm text-secondary">CSV File</label>
+                  <input 
+                    type="file" 
+                    accept=".csv"
+                    onChange={e => setCsvFile(e.target.files ? e.target.files[0] : null)}
+                    required
+                    style={{ padding: '0.5rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
+                  />
+                </div>
+              </div>
+              <button 
+                type="submit" 
+                className="btn btn-primary" 
+                disabled={uploading || !csvFile}
+              >
+                {uploading ? 'Uploading...' : 'Upload CSV'}
+              </button>
+            </form>
+          </div>
+
         </div>
 
         {syncResult.status && (

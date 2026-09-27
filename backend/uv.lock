@@ -3239,6 +3239,21 @@ wheels = [
 ]
 
 [[package]]
+name = "smartapi-python"
+version = "1.5.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-dateutil" },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "requests", version = "2.34.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/dc/1e/86cc2366999e8e659b296427e0a1f53b8f4c97c0ed734ff1adc7816d4b71/smartapi_python-1.5.5.tar.gz", hash = "sha256:7d03f35c0036149a358bd52bee11f7e17e5c0ae3fa3686bab35849761347a801", size = 25169, upload-time = "2025-02-07T12:00:38.941Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/01/13/82594a14af38bb1427f99b4f1a20089f2262c9c006c54e3b638bd0e0b1a5/smartapi_python-1.5.5-py3-none-any.whl", hash = "sha256:32991f413134f773d29a09762660d8a93026c4820bb8881a68ca48be9e45ff7d", size = 28000, upload-time = "2025-02-07T12:00:34.94Z" },
+]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.54"
 source = { registry = "https://pypi.org/simple" }
@@ -3851,6 +3866,7 @@ dependencies = [
     { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "smartapi-python" },
     { name = "sqlalchemy" },
     { name = "uvicorn", version = "0.39.0", source = { registry = "https://pypi.org/simple" }, extra = ["standard"], marker = "python_full_version < '3.10'" },
     { name = "uvicorn", version = "0.53.0", source = { registry = "https://pypi.org/simple" }, extra = ["standard"], marker = "python_full_version >= '3.10'" },
@@ -3889,6 +3905,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "python-multipart", specifier = ">=0.0.9" },
     { name = "scipy", specifier = ">=1.13.0" },
+    { name = "smartapi-python", specifier = ">=1.3.1" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.29.0" },
 ]
