@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import ConnectDataModal from "./ConnectDataModal";
+import AddTransactionModal from "./AddTransactionModal";
 import "./Navbar.css";
 
 const NAV_LINKS = [
@@ -17,6 +18,7 @@ type AOStatus = { connected: boolean; credentials_configured: boolean; last_sync
 export default function Navbar() {
   const pathname = usePathname();
   const [modalOpen, setModalOpen]   = useState(false);
+  const [txnModalOpen, setTxnModalOpen] = useState(false);
   const [menuOpen, setMenuOpen]     = useState(false);
   const [aoStatus, setAoStatus]     = useState<AOStatus | null>(null);
   const [syncing,  setSyncing]      = useState(false);
@@ -89,6 +91,10 @@ export default function Navbar() {
             <span className="ao-label">{aoLabel}</span>
           </button>
 
+          <button className="btn btn-secondary" onClick={() => setTxnModalOpen(true)}>
+            Add Manual Data
+          </button>
+
           <button className="btn btn-secondary" onClick={() => setModalOpen(true)}>
             Import Data
           </button>
@@ -142,6 +148,9 @@ export default function Navbar() {
                 <span className={dotClass} aria-hidden="true" />
                 <span className="ao-label">{aoLabel}</span>
               </button>
+              <button className="btn btn-secondary" style={{ width: "100%", marginBottom: "0.5rem" }} onClick={() => { setMenuOpen(false); setTxnModalOpen(true); }}>
+                Add Manual Data
+              </button>
               <button className="btn btn-secondary" style={{ width: "100%" }} onClick={() => { setMenuOpen(false); setModalOpen(true); }}>
                 Import Data
               </button>
@@ -151,6 +160,7 @@ export default function Navbar() {
       )}
 
       <ConnectDataModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <AddTransactionModal isOpen={txnModalOpen} onClose={() => setTxnModalOpen(false)} />
     </>
   );
 }
