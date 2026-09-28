@@ -6,9 +6,8 @@ Maps raw AngelOne API response fields to our internal domain models.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ def normalize_holding(raw: dict) -> dict:
         pnl_pct = Decimal(str(raw.get("pnlpercentage", 0)))
         t1_qty = Decimal(str(raw.get("t1quantity", 0)))
     except Exception:
-        qty = avg_price = ltp = pnl = pnl_pct = t1_qty = Decimal("0")
+        qty = avg_price = ltp = pnl = pnl_pct = t1_qty = Decimal(0)
 
     product = raw.get("product", "").upper()
     symbol_token = raw.get("symboltoken", "")
@@ -56,7 +55,7 @@ def normalize_holding(raw: dict) -> dict:
     }
 
 
-def normalize_trade(raw: dict) -> Optional[dict]:
+def normalize_trade(raw: dict) -> dict | None:
     """
     Maps a single item from getTradeBook['data'] to our InvestmentTransaction schema.
 
@@ -104,7 +103,7 @@ def normalize_trade(raw: dict) -> Optional[dict]:
         return None
 
 
-def normalize_position(raw: dict) -> Optional[dict]:
+def normalize_position(raw: dict) -> dict | None:
     """Maps a getPosition item to a lightweight position dict."""
     try:
         ticker = raw.get("tradingsymbol", "").strip().upper()

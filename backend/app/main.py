@@ -8,9 +8,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.db.database import init_db, AsyncSessionLocal
 from app.api.routes.routes import router
 from app.core.config import get_settings
+from app.db.database import AsyncSessionLocal, init_db
 
 logger = logging.getLogger(__name__)
 

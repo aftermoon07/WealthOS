@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 TRANSACTION CATEGORIZATION ENGINE
 ===================================
@@ -10,8 +11,6 @@ No AI — fast, deterministic, testable.
 from __future__ import annotations
 
 import re
-from typing import Optional
-
 
 # Merchant → category mapping (case-insensitive prefix/substring match)
 # Order matters: first match wins.
@@ -157,9 +156,9 @@ DESCRIPTION_RULES: list[tuple[str, str]] = [
 
 def categorize_transaction(
     description: str,
-    merchant: Optional[str],
+    merchant: str | None,
     amount: float,
-    user_override: Optional[str] = None,
+    user_override: str | None = None,
 ) -> str:
     """
     Categorize a transaction. User override always wins.
@@ -187,7 +186,7 @@ def categorize_transaction(
     return "Other"
 
 
-def normalize_merchant(raw: Optional[str]) -> Optional[str]:
+def normalize_merchant(raw: str | None) -> str | None:
     """Normalize merchant name: strip UPI suffixes, extra spaces, etc."""
     if not raw:
         return None

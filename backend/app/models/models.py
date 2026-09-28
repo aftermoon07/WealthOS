@@ -1,16 +1,27 @@
 """SQLAlchemy ORM models — all financial entities."""
 from __future__ import annotations
+
 import enum
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Optional
+
 from sqlalchemy import (
-    String, Numeric, DateTime, Date, Boolean, Text, ForeignKey,
-    Enum as SAEnum, Integer, JSON,
+    JSON,
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+)
+from sqlalchemy import (
+    Enum as SAEnum,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.db.database import Base
 
+from app.db.database import Base
 
 # ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -99,24 +110,24 @@ class Account(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(200))
     account_type: Mapped[AccountType] = mapped_column(SAEnum(AccountType))
-    institution: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    institution: Mapped[str | None] = mapped_column(String(200), nullable=True)
     currency: Mapped[str] = mapped_column(String(10), default="INR")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     # For credit cards / loans: current outstanding balance
-    outstanding_balance: Mapped[Optional[Decimal]] = mapped_column(
+    outstanding_balance: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 2), nullable=True
     )
     # For loans: original principal, interest rate, EMI
-    loan_principal: Mapped[Optional[Decimal]] = mapped_column(
+    loan_principal: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 2), nullable=True
     )
-    interest_rate: Mapped[Optional[Decimal]] = mapped_column(
+    interest_rate: Mapped[Decimal | None] = mapped_column(
         Numeric(8, 4), nullable=True
     )
-    emi: Mapped[Optional[Decimal]] = mapped_column(Numeric(18, 2), nullable=True)
+    emi: Mapped[Decimal | None] = mapped_column(Numeric(18, 2), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    transactions: Mapped[list["Transaction"]] = relationship(
+    transactions: Mapped[list[Transaction]] = relationship(
         "Transaction",
         primaryjoin="Transaction.account_id == Account.id",
         foreign_keys="[Transaction.account_id]",
@@ -134,10 +145,10 @@ class Category(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(100), unique=True)
-    parent_category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    parent_category: Mapped[str | None] = mapped_column(String(100), nullable=True)
     transaction_type: Mapped[TransactionType] = mapped_column(SAEnum(TransactionType))
     is_essential: Mapped[bool] = mapped_column(Boolean, default=False)
-    color: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    color: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
     transactions: Mapped[list[Transaction]] = relationship(
         "Transaction", back_populates="category_rel"
@@ -154,31 +165,31 @@ class Transaction(Base):
     amount: Mapped[Decimal] = mapped_column(Numeric(18, 2))  # Always positive
     currency: Mapped[str] = mapped_column(String(10), default="INR")
     description: Mapped[str] = mapped_column(String(500))
-    merchant: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
-    category_id: Mapped[Optional[int]] = mapped_column(
+    merchant: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    category_id: Mapped[int | None] = mapped_column(
         ForeignKey("categories.id"), nullable=True
     )
     transaction_type: Mapped[TransactionType] = mapped_column(SAEnum(TransactionType))
     # For transfers: the linked account on the other side
-    transfer_account_id: Mapped[Optional[int]] = mapped_column(
+    transfer_account_id: Mapped[int | None] = mapped_column(
         ForeignKey("accounts.id"), nullable=True
     )
-    reference: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    reference: Mapped[str | None] = mapped_column(String(200), nullable=True)
     # User-overridden category flag
     category_overridden: Mapped[bool] = mapped_column(Boolean, default=False)
-    duplicate_status: Mapped[Optional[DuplicateStatus]] = mapped_column(
+    duplicate_status: Mapped[DuplicateStatus | None] = mapped_column(
         SAEnum(DuplicateStatus), nullable=True
     )
-    extra_metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    extra_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    account: Mapped["Account"] = relationship(
+    account: Mapped[Account] = relationship(
         "Account",
         primaryjoin="Transaction.account_id == Account.id",
         foreign_keys="[Transaction.account_id]",
         back_populates="transactions",
     )
-    category_rel: Mapped[Optional[Category]] = relationship(
+    category_rel: Mapped[Category | None] = relationship(
         "Category", back_populates="transactions"
     )
 
@@ -191,10 +202,10 @@ class Security(Base):
     ticker: Mapped[str] = mapped_column(String(50), unique=True)
     name: Mapped[str] = mapped_column(String(300))
     investment_type: Mapped[InvestmentType] = mapped_column(SAEnum(InvestmentType))
-    sector: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    asset_class: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    sector: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    asset_class: Mapped[str | None] = mapped_column(String(100), nullable=True)
     currency: Mapped[str] = mapped_column(String(10), default="INR")
-    isin: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    isin: Mapped[str | None] = mapped_column(String(30), nullable=True)
 
     investment_transactions: Mapped[list[InvestmentTransaction]] = relationship(
         "InvestmentTransaction", back_populates="security"
@@ -215,10 +226,10 @@ class InvestmentTransaction(Base):
     txn_type: Mapped[InvestmentTxnType] = mapped_column(SAEnum(InvestmentTxnType))
     quantity: Mapped[Decimal] = mapped_column(Numeric(20, 6))
     price: Mapped[Decimal] = mapped_column(Numeric(18, 4))  # per unit
-    fees: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal("0"))
-    taxes: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal("0"))
+    fees: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal(0))
+    taxes: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal(0))
     currency: Mapped[str] = mapped_column(String(10), default="INR")
-    extra_metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    extra_metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     account: Mapped[Account] = relationship(
@@ -255,15 +266,15 @@ class Goal(Base):
     name: Mapped[str] = mapped_column(String(200))
     goal_type: Mapped[GoalType] = mapped_column(SAEnum(GoalType))
     target_amount: Mapped[Decimal] = mapped_column(Numeric(18, 2))
-    current_amount: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal("0"))
-    target_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    monthly_contribution: Mapped[Optional[Decimal]] = mapped_column(
+    current_amount: Mapped[Decimal] = mapped_column(Numeric(18, 2), default=Decimal(0))
+    target_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    monthly_contribution: Mapped[Decimal | None] = mapped_column(
         Numeric(18, 2), nullable=True
     )
-    expected_return_pct: Mapped[Optional[Decimal]] = mapped_column(
+    expected_return_pct: Mapped[Decimal | None] = mapped_column(
         Numeric(8, 4), nullable=True
     )
-    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
@@ -277,5 +288,5 @@ class NetWorthSnapshot(Base):
     total_assets: Mapped[Decimal] = mapped_column(Numeric(18, 2))
     total_liabilities: Mapped[Decimal] = mapped_column(Numeric(18, 2))
     net_worth: Mapped[Decimal] = mapped_column(Numeric(18, 2))
-    breakdown: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    breakdown: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -1,8 +1,11 @@
+from typing import AsyncGenerator
 """SQLAlchemy async engine + session factory."""
 from __future__ import annotations
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import select
+
 from app.core.config import get_settings
 
 
@@ -25,7 +28,7 @@ SessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSe
 AsyncSessionLocal = SessionLocal
 
 
-async def get_db() -> AsyncSession:  # type: ignore[override]
+async def get_db() -> AsyncGenerator[AsyncSession, None]:  # type: ignore[override]
     async with SessionLocal() as session:
         yield session
 
@@ -36,6 +39,7 @@ async def init_db() -> None:
         await conn.run_sync(Base.metadata.create_all)
         
     import os
+
     from app.models.models import Account
     async with SessionLocal() as session:
         result = await session.execute(select(Account))
