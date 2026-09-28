@@ -9,10 +9,13 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org/)
 [![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-wealth--os--app.vercel.app-000000?style=for-the-badge&logo=vercel)](https://wealth-os-app.vercel.app)
 
 *No data leaves your machine. The AI interprets — Python calculates.*
 
 [Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Live Demo](#-live-demo--deployment) • [Installation](#-installation--setup) • [API Reference](#-api-reference)
+
+🌐 **[wealth-os-app.vercel.app](https://wealth-os-app.vercel.app)** — Live frontend (connect your own backend)
 
 </div>
 
@@ -215,6 +218,8 @@ graph LR
 ---
 
 ## 🌐 Live Demo & Deployment
+
+> **Live Frontend:** [wealth-os-app.vercel.app](https://wealth-os-app.vercel.app)
 
 WealthOS frontend is deployed on **Vercel**. Because WealthOS is privacy-first, the deployed site does **not** host any financial data — it connects directly to your own backend running locally on your machine.
 
