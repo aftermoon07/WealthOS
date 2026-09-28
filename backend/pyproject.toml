@@ -41,3 +41,7 @@ postgres = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["app*"]
+
+[tool.ruff]
+target-version = "py39"
+lint.ignore = ["UP007", "UP006", "FURB157", "DTZ", "BLE001", "UP045", "B008"]

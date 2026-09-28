@@ -1,37 +1,54 @@
 """All API routes — single file for simplicity (modular monolith)."""
 from __future__ import annotations
 
-import io
 from datetime import date
-from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
-from sqlalchemy import select, and_, func
-from sqlalchemy.orm import selectinload, joinedload
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 
+from app.core.config import get_settings
 from app.db.database import get_db
 from app.models.models import (
-    Account, Transaction, TransactionType, InvestmentTransaction,
-    Security, MarketPrice, Goal, Category, NetWorthSnapshot,
+    Account,
+    Category,
+    Goal,
+    InvestmentTransaction,
     MarketDataSource,
+    MarketPrice,
+    NetWorthSnapshot,
+    Security,
+    Transaction,
+    TransactionType,
 )
 from app.schemas.schemas import (
-    AccountCreate, AccountOut, TransactionCreate, TransactionOut,
-    TransactionUpdate, InvestmentTransactionCreate, InvestmentTransactionOut,
-    SecurityCreate, SecurityOut, MarketPriceCreate, GoalCreate, GoalOut,
-    AssistantQuery, AssistantResponse, CSVImportResult,
+    AccountCreate,
+    AccountOut,
+    AssistantQuery,
+    AssistantResponse,
+    CSVImportResult,
+    GoalCreate,
+    GoalOut,
+    InvestmentTransactionCreate,
+    InvestmentTransactionOut,
+    MarketPriceCreate,
+    SecurityCreate,
+    SecurityOut,
+    TransactionCreate,
+    TransactionOut,
+    TransactionUpdate,
 )
-from app.services.cash_flow import calculate_cash_flow
-from app.services.net_worth import calculate_net_worth, calculate_emergency_fund_coverage
-from app.services.portfolio import assemble_portfolio_metrics
-from app.services.spending import analyze_spending
-from app.services.anomalies import detect_all_anomalies
-from app.services.goals import analyze_goal
 from app.services.ai.agent.financial_agent import run_financial_agent
-from app.services.ingestion.csv_parser import parse_bank_csv
+from app.services.anomalies import detect_all_anomalies
+from app.services.cash_flow import calculate_cash_flow
 from app.services.categorization import categorize_transaction, normalize_merchant
-from app.core.config import get_settings
+from app.services.goals import analyze_goal
+from app.services.ingestion.csv_parser import parse_bank_csv
+from app.services.net_worth import (
+    calculate_net_worth,
+)
+from app.services.spending import analyze_spending
 
 router = APIRouter()
 
@@ -41,18 +58,6 @@ router = APIRouter()
 @router.get("/health")
 async def health():
     return {"status": "ok", "timestamp": str(date.today())}
-
-# ─── Demo ─────────────────────────────────────────────────────────────────────
-
-@router.post("/demo/seed")
-async def seed_demo(force: bool = False, db: AsyncSession = Depends(get_db)):
-    """Seed demo data. Use force=true to re-seed."""
-    from app.services.ingestion.demo_seeder import seed_demo_data
-    await seed_demo_data(db, force=force)
-    return {"status": "seeded"}
-
-
-
 # ─── Demo ─────────────────────────────────────────────────────────────────────
 
 @router.post("/demo/seed")
@@ -95,10 +100,10 @@ async def delete_account(account_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.get("/transactions", response_model=list[TransactionOut])
 async def list_transactions(
-    account_id: Optional[int] = None,
-    transaction_type: Optional[str] = None,
-    year: Optional[int] = None,
-    month: Optional[int] = None,
+    account_id: int | None = None,
+    transaction_type: str | None = None,
+    year: int | None = None,
+    month: int | None = None,
     limit: int = Query(default=100, le=500),
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
@@ -316,7 +321,9 @@ async def get_anomalies(
 
 @router.get("/portfolio/summary")
 async def portfolio_summary(db: AsyncSession = Depends(get_db)):
-    from app.services.ai.tools.financial_tools import get_portfolio_summary, _load_market_prices
+    from app.services.ai.tools.financial_tools import (
+        get_portfolio_summary,
+    )
     result = await get_portfolio_summary(db)
 
     # Add data source label
@@ -380,7 +387,7 @@ async def update_price(
 
 @router.get("/investments/transactions", response_model=list[InvestmentTransactionOut])
 async def list_investment_transactions(
-    security_id: Optional[int] = None,
+    security_id: int | None = None,
     db: AsyncSession = Depends(get_db),
 ):
     q = select(InvestmentTransaction).order_by(InvestmentTransaction.date.desc())
@@ -454,8 +461,12 @@ async def monthly_report(
 ):
     """Structured monthly financial review."""
     from app.services.ai.tools.financial_tools import (
-        get_financial_summary, get_spending_analysis, get_anomalies as _get_anomalies,
+        get_anomalies as _get_anomalies,
+    )
+    from app.services.ai.tools.financial_tools import (
+        get_financial_summary,
         get_goal_progress,
+        get_spending_analysis,
     )
 
     summary = await get_financial_summary(db, year, month)
@@ -581,11 +592,14 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
     year, month = today.year, today.month
 
     from app.services.ai.tools.financial_tools import (
-        get_financial_summary, get_spending_analysis,
-        get_anomalies as _anoms, get_goal_progress,
+        get_anomalies as _anoms,
     )
-
-    from app.services.ai.tools.financial_tools import get_portfolio_summary
+    from app.services.ai.tools.financial_tools import (
+        get_financial_summary,
+        get_goal_progress,
+        get_portfolio_summary,
+        get_spending_analysis,
+    )
     summary = await get_financial_summary(db, year, month)
     portfolio_summary = await get_portfolio_summary(db)
 
@@ -622,7 +636,7 @@ async def angelone_connect():
     try:
         profile = await svc.connect()
         return {"status": "connected", "profile": profile}
-    except EnvironmentError as e:
+    except OSError as e:
         raise HTTPException(422, detail=str(e))
     except ConnectionError as e:
         raise HTTPException(502, detail=f"AngelOne login failed: {e}")
@@ -649,7 +663,10 @@ async def angelone_sync(db: AsyncSession = Depends(get_db)):
 @router.get("/integrations/angelone/status")
 async def angelone_status():
     """Return last sync status and connection health."""
-    from app.services.integrations.angelone.angelone_service import get_sync_status, get_angelone_service
+    from app.services.integrations.angelone.angelone_service import (
+        get_angelone_service,
+        get_sync_status,
+    )
     svc = get_angelone_service()
     state = get_sync_status()
     return {"credentials_configured": svc._has_credentials, **state}

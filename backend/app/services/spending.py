@@ -9,10 +9,8 @@ rolling averages, anomalies, and recurring transactions.
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass, field
-from datetime import date
+from dataclasses import dataclass
 from decimal import Decimal
-from typing import Optional
 
 from app.models.models import Transaction, TransactionType
 
@@ -21,11 +19,11 @@ from app.models.models import Transaction, TransactionType
 class CategorySpend:
     category: str
     current_month: Decimal
-    avg_3m: Optional[Decimal]
-    avg_6m: Optional[Decimal]
-    avg_12m: Optional[Decimal]
-    mom_change: Optional[Decimal]       # vs previous month
-    mom_change_pct: Optional[Decimal]
+    avg_3m: Decimal | None
+    avg_6m: Decimal | None
+    avg_12m: Decimal | None
+    mom_change: Decimal | None       # vs previous month
+    mom_change_pct: Decimal | None
     is_anomaly: bool = False
     anomaly_reason: str = ""
 
@@ -74,7 +72,7 @@ def analyze_spending(
 
     current_key = (target_year, target_month)
     current_spend = monthly_by_cat.get(current_key, {})
-    total_spending = sum(current_spend.values(), Decimal("0"))
+    total_spending = sum(current_spend.values(), Decimal(0))
 
     # Build prior months list (up to 12)
     all_months = sorted(monthly_by_cat.keys())
@@ -98,10 +96,10 @@ def analyze_spending(
 
     categories = []
     for cat in sorted(all_cats):
-        curr = current_spend.get(cat, Decimal("0"))
+        curr = current_spend.get(cat, Decimal(0))
 
-        def avg_for(months_list):
-            vals = [monthly_by_cat[m].get(cat, Decimal("0")) for m in months_list]
+        def avg_for(months_list, c=cat):
+            vals = [monthly_by_cat[m].get(c, Decimal(0)) for m in months_list]
             if not vals:
                 return None
             return (sum(vals) / len(vals)).quantize(Decimal("0.01"))
@@ -110,7 +108,7 @@ def analyze_spending(
         avg6 = avg_for(prior_6)
         avg12 = avg_for(prior_12)
 
-        prev = monthly_by_cat.get(prev_month_key, {}).get(cat, Decimal("0")) if prev_month_key else None
+        prev = monthly_by_cat.get(prev_month_key, {}).get(cat, Decimal(0)) if prev_month_key else None
         mom_change = (curr - prev) if prev is not None else None
         mom_pct = (
             (mom_change / prev * 100).quantize(Decimal("0.1"))
