@@ -585,7 +585,17 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
         get_anomalies as _anoms, get_goal_progress,
     )
 
+    from app.services.ai.tools.financial_tools import get_portfolio_summary
     summary = await get_financial_summary(db, year, month)
+    portfolio_summary = await get_portfolio_summary(db)
+
+    # Augment summary with frontend-expected keys
+    summary["income"] = summary["monthly_income"]
+    summary["expenses"] = summary["monthly_expenses"]
+    summary["savings"] = summary["monthly_savings"]
+    summary["xirr"] = portfolio_summary.get("xirr")
+    summary["unrealized_pnl_pct"] = portfolio_summary.get("unrealized_pnl_pct")
+
     spending = await get_spending_analysis(db, year, month)
     anomalies = await _anoms(db, year, month)
     goals = await get_goal_progress(db)
