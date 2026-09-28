@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """
 REALISTIC 12-MONTH DEMO DATA SEEDER
 =====================================

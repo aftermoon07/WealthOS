@@ -100,10 +100,10 @@ async def delete_account(account_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.get("/transactions", response_model=list[TransactionOut])
 async def list_transactions(
-    account_id: int | None = None,
-    transaction_type: str | None = None,
-    year: int | None = None,
-    month: int | None = None,
+    account_id: Optional[int] = None,
+    transaction_type: Optional[str] = None,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
     limit: int = Query(default=100, le=500),
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
@@ -387,7 +387,7 @@ async def update_price(
 
 @router.get("/investments/transactions", response_model=list[InvestmentTransactionOut])
 async def list_investment_transactions(
-    security_id: int | None = None,
+    security_id: Optional[int] = None,
     db: AsyncSession = Depends(get_db),
 ):
     q = select(InvestmentTransaction).order_by(InvestmentTransaction.date.desc())
