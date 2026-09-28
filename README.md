@@ -250,9 +250,11 @@ WealthOS frontend is deployed on **Vercel**. Because WealthOS is privacy-first, 
 
 > **Note:** For the rewrite proxy to work, the `NEXT_PUBLIC_API_URL` environment variable can be set in Vercel to point to any public backend URL (e.g. a VPS). Leave it unset to use the setup page flow.
 
-### Deploying the Backend to Render (Optional)
+### Deploying the Backend to Render (100% Free)
 
-If you want your backend data to be accessible everywhere (not just on your local machine), you can deploy the backend to **Render.com**. We have included a `render.yaml` file that sets up a Python Web Service with a 1GB Persistent Disk to safely store your SQLite database.
+If you want your backend data to be accessible everywhere (not just on your local machine) without spending any money, you can deploy the backend to **Render.com**. We have included a `render.yaml` file that sets up a Free Python Web Service. 
+
+*Note: Render's free tier spins down after inactivity, and the local SQLite database will be reset when it spins back up. This makes it perfect for a portfolio demo!*
 
 1. Go to [Render Dashboard](https://dashboard.render.com/)
 2. Click **New** → **Blueprints**
