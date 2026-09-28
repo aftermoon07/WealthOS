@@ -36,7 +36,7 @@ async def init_db() -> None:
         await conn.run_sync(Base.metadata.create_all)
         
     # Auto-create a default account if none exists
-    from app.db.models import Account
+    from app.models.models import Account
     async with SessionLocal() as session:
         result = await session.execute(select(Account))
         if not result.scalars().first():
