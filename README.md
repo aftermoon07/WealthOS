@@ -12,7 +12,7 @@
 
 *No data leaves your machine. The AI interprets — Python calculates.*
 
-[Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Installation](#-installation--setup) • [API Reference](#-api-reference)
+[Features](#-key-features) • [Architecture](#-system-architecture) • [Tech Stack](#-tech-stack) • [Live Demo](#-live-demo--deployment) • [Installation](#-installation--setup) • [API Reference](#-api-reference)
 
 </div>
 
@@ -211,6 +211,39 @@ graph LR
 | **SQLite** | Default local database (zero config) |
 | **PostgreSQL** | Production / multi-user option |
 | **Alembic** | Database migrations |
+
+---
+
+## 🌐 Live Demo & Deployment
+
+WealthOS frontend is deployed on **Vercel**. Because WealthOS is privacy-first, the deployed site does **not** host any financial data — it connects directly to your own backend running locally on your machine.
+
+### How It Works
+
+```
+[Vercel: wealthos.vercel.app] ──── fetch /api/* ────► [Your Machine: localhost:8000]
+         (Next.js UI)                                       (FastAPI + SQLite)
+```
+
+### Deploy Your Own Frontend to Vercel
+
+1. Fork [aftermoon07/WealthOS](https://github.com/aftermoon07/WealthOS) on GitHub
+2. Go to [vercel.com](https://vercel.com) → **New Project** → import your fork
+3. Vercel will auto-detect the Next.js app (root directory: `frontend`)
+4. Click **Deploy** — done!
+
+### Using the Deployed Frontend
+
+1. Start your local backend:
+   ```bash
+   cd WealthOS/backend
+   uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+   ```
+2. Open the deployed URL and go to **`/setup`**
+3. Enter your local backend URL (e.g. `http://localhost:8000`)
+4. Click **Connect** — the UI saves the URL to `localStorage` and connects privately
+
+> **Note:** For the rewrite proxy to work, the `NEXT_PUBLIC_API_URL` environment variable can be set in Vercel to point to any public backend URL (e.g. a VPS). Leave it unset to use the setup page flow.
 
 ---
 
