@@ -7,7 +7,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
 from sqlalchemy import select, and_, func
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import get_db
@@ -103,7 +103,7 @@ async def list_transactions(
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    q = select(Transaction).order_by(Transaction.date.desc())
+    q = select(Transaction).options(joinedload(Transaction.category_rel)).order_by(Transaction.date.desc())
     if account_id:
         q = q.where(Transaction.account_id == account_id)
     if transaction_type:
@@ -121,11 +121,7 @@ async def list_transactions(
 
     out = []
     for t in txns:
-        cat_name = None
-        if t.category_id:
-            cat_r = await db.execute(select(Category).where(Category.id == t.category_id))
-            cat = cat_r.scalar_one_or_none()
-            cat_name = cat.name if cat else None
+        cat_name = t.category_rel.name if t.category_rel else None
         out.append(TransactionOut(
             id=t.id, date=t.date, account_id=t.account_id, amount=t.amount,
             currency=t.currency, description=t.description, merchant=t.merchant,
