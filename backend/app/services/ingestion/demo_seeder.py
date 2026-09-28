@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 REALISTIC 12-MONTH DEMO DATA SEEDER
 =====================================
@@ -16,29 +15,20 @@ Designed to exercise:
 from __future__ import annotations
 
 import asyncio
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
+from typing import Optional
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-from app.db.database import SessionLocal, init_db
 from app.models.models import (
-    Account,
-    AccountType,
-    Category,
-    Goal,
-    GoalType,
-    InvestmentTransaction,
-    InvestmentTxnType,
-    InvestmentType,
-    MarketDataSource,
-    MarketPrice,
-    NetWorthSnapshot,
-    Security,
-    Transaction,
-    TransactionType,
+    Account, AccountType, Category, TransactionType, Transaction,
+    Security, InvestmentType, InvestmentTransaction, InvestmentTxnType,
+    MarketPrice, MarketDataSource, Goal, GoalType, NetWorthSnapshot,
 )
+from app.db.database import SessionLocal, init_db
+
 
 # ─── Helper ────────────────────────────────────────────────────────────────────
 

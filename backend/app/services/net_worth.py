@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal
+from typing import Optional
 
 from app.models.models import Account, AccountType
 
@@ -20,25 +21,25 @@ from app.models.models import Account, AccountType
 @dataclass
 class NetWorthResult:
     # Assets
-    cash_and_bank: Decimal = Decimal(0)
-    investment_value: Decimal = Decimal(0)
-    other_assets: Decimal = Decimal(0)
-    total_assets: Decimal = Decimal(0)
+    cash_and_bank: Decimal = Decimal("0")
+    investment_value: Decimal = Decimal("0")
+    other_assets: Decimal = Decimal("0")
+    total_assets: Decimal = Decimal("0")
 
     # Liabilities
-    loan_outstanding: Decimal = Decimal(0)
-    credit_card_outstanding: Decimal = Decimal(0)
-    total_liabilities: Decimal = Decimal(0)
+    loan_outstanding: Decimal = Decimal("0")
+    credit_card_outstanding: Decimal = Decimal("0")
+    total_liabilities: Decimal = Decimal("0")
 
-    net_worth: Decimal = Decimal(0)
+    net_worth: Decimal = Decimal("0")
 
     # Liquidity
-    liquid_savings: Decimal = Decimal(0)  # Only cash/savings accounts
+    liquid_savings: Decimal = Decimal("0")  # Only cash/savings accounts
 
 
 def calculate_net_worth(
     accounts: list[Account],
-    portfolio_value: Decimal = Decimal(0),
+    portfolio_value: Decimal = Decimal("0"),
 ) -> NetWorthResult:
     """
     Calculate net worth from accounts + portfolio market value.
@@ -57,16 +58,16 @@ def calculate_net_worth(
         if t in (AccountType.CHECKING, AccountType.SAVINGS):
             # Balance is tracked via transactions — use outstanding if set
             # For demo mode, we use outstanding_balance as the current balance
-            balance = acc.outstanding_balance or Decimal(0)
+            balance = acc.outstanding_balance or Decimal("0")
             result.cash_and_bank += balance
             result.liquid_savings += balance  # these are liquid
 
         elif t == AccountType.CREDIT_CARD:
-            outstanding = acc.outstanding_balance or Decimal(0)
+            outstanding = acc.outstanding_balance or Decimal("0")
             result.credit_card_outstanding += outstanding
 
         elif t == AccountType.LOAN:
-            outstanding = acc.outstanding_balance or Decimal(0)
+            outstanding = acc.outstanding_balance or Decimal("0")
             result.loan_outstanding += outstanding
 
         elif t == AccountType.INVESTMENT:
@@ -83,7 +84,7 @@ def calculate_net_worth(
 def calculate_emergency_fund_coverage(
     essential_monthly_expenses: Decimal,
     liquid_savings: Decimal,
-) -> Decimal | None:
+) -> Optional[Decimal]:
     """
     Emergency fund months = liquid savings / essential monthly expenses.
     Returns None if essential expenses are zero (undefined).

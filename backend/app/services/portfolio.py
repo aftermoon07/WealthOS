@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 PORTFOLIO ENGINE
 ================
@@ -14,11 +13,14 @@ References: RULES.md section "Portfolio Methodology"
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
+from typing import Optional
 
 from app.models.models import InvestmentTransaction, InvestmentTxnType
+
 
 # ─── Data Structures ──────────────────────────────────────────────────────────
 
@@ -29,35 +31,35 @@ class Holding:
     ticker: str
     name: str
     investment_type: str
-    sector: str | None
+    sector: Optional[str]
     quantity: Decimal
     average_cost: Decimal       # Weighted-average cost per unit
     total_cost: Decimal         # average_cost × quantity
-    current_price: Decimal | None
-    market_value: Decimal | None     # quantity × current_price
-    unrealized_pnl: Decimal | None   # market_value - total_cost
-    unrealized_pnl_pct: Decimal | None
+    current_price: Optional[Decimal]
+    market_value: Optional[Decimal]     # quantity × current_price
+    unrealized_pnl: Optional[Decimal]   # market_value - total_cost
+    unrealized_pnl_pct: Optional[Decimal]
     price_source: str = "DEMO"
-    price_date: date | None = None
+    price_date: Optional[date] = None
 
 
 @dataclass
 class PortfolioMetrics:
-    total_invested: Decimal = Decimal(0)      # Sum of all buy costs
-    total_market_value: Decimal | None = None
-    total_unrealized_pnl: Decimal | None = None
-    total_unrealized_pnl_pct: Decimal | None = None
-    total_realized_pnl: Decimal = Decimal(0)
-    dividend_income: Decimal = Decimal(0)
-    xirr: Decimal | None = None
+    total_invested: Decimal = Decimal("0")      # Sum of all buy costs
+    total_market_value: Optional[Decimal] = None
+    total_unrealized_pnl: Optional[Decimal] = None
+    total_unrealized_pnl_pct: Optional[Decimal] = None
+    total_realized_pnl: Decimal = Decimal("0")
+    dividend_income: Decimal = Decimal("0")
+    xirr: Optional[Decimal] = None
     xirr_confidence: str = "LOW"
     xirr_reason: str = ""
-    cagr: Decimal | None = None
+    cagr: Optional[Decimal] = None
     holdings: list[Holding] = field(default_factory=list)
     asset_allocation: dict[str, Decimal] = field(default_factory=dict)
     sector_allocation: dict[str, Decimal] = field(default_factory=dict)
-    concentration: Decimal | None = None   # Largest holding as % of portfolio
-    top3_concentration: Decimal | None = None
+    concentration: Optional[Decimal] = None   # Largest holding as % of portfolio
+    top3_concentration: Optional[Decimal] = None
 
 
 # ─── Cost Basis — Weighted Average ────────────────────────────────────────────
@@ -86,7 +88,7 @@ def calculate_holdings(
     for txn in txns:
         sid = txn.security_id
         if sid not in position:
-            position[sid] = {"quantity": Decimal(0), "total_cost": Decimal(0)}
+            position[sid] = {"quantity": Decimal("0"), "total_cost": Decimal("0")}
             security_meta[sid] = {
                 "ticker": txn.security.ticker,
                 "name": txn.security.name,
@@ -104,11 +106,11 @@ def calculate_holdings(
         elif txn.txn_type == InvestmentTxnType.SELL:
             if pos["quantity"] > 0:
                 # Proportionally reduce total cost (WAVG method)
-                sell_ratio = min(txn.quantity / pos["quantity"], Decimal(1))
+                sell_ratio = min(txn.quantity / pos["quantity"], Decimal("1"))
                 pos["total_cost"] -= pos["total_cost"] * sell_ratio
                 pos["quantity"] -= txn.quantity
-                pos["quantity"] = max(pos["quantity"], Decimal(0))
-                pos["total_cost"] = max(pos["total_cost"], Decimal(0))
+                pos["quantity"] = max(pos["quantity"], Decimal("0"))
+                pos["total_cost"] = max(pos["total_cost"], Decimal("0"))
 
         elif txn.txn_type == InvestmentTxnType.BONUS:
             # Bonus shares: no cost, increase quantity, reduce average cost
@@ -131,7 +133,7 @@ def calculate_holdings(
         avg_cost = (
             (pos["total_cost"] / pos["quantity"]).quantize(Decimal("0.0001"))
             if pos["quantity"] > 0
-            else Decimal(0)
+            else Decimal("0")
         )
 
         price_info = market_prices.get(sid)
@@ -180,12 +182,12 @@ def calculate_realized_pnl(
     On each sell: realized = (sell_price - avg_cost_at_time) × quantity - fees.
     """
     running: dict[int, dict] = {}  # security_id → {quantity, total_cost}
-    total_realized = Decimal(0)
+    total_realized = Decimal("0")
 
     for txn in sorted(investment_transactions, key=lambda t: t.date):
         sid = txn.security_id
         if sid not in running:
-            running[sid] = {"quantity": Decimal(0), "total_cost": Decimal(0)}
+            running[sid] = {"quantity": Decimal("0"), "total_cost": Decimal("0")}
 
         r = running[sid]
 
@@ -204,7 +206,7 @@ def calculate_realized_pnl(
             if r["quantity"] > 0:
                 r["total_cost"] -= avg_cost * qty_sold
             else:
-                r["total_cost"] = Decimal(0)
+                r["total_cost"] = Decimal("0")
 
     return total_realized.quantize(Decimal("0.01"))
 
@@ -216,7 +218,7 @@ def calculate_xirr(
     cash_flows: list[tuple[date, Decimal]],
     tolerance: float = 1e-7,
     max_iterations: int = 200,
-) -> float | None:
+) -> Optional[float]:
     """
     Extended Internal Rate of Return (money-weighted return).
 
@@ -274,7 +276,7 @@ def calculate_cagr(
     start_value: Decimal,
     end_value: Decimal,
     years: float,
-) -> Decimal | None:
+) -> Optional[Decimal]:
     """
     Compound Annual Growth Rate.
     CAGR = (end / start) ^ (1 / years) - 1
@@ -301,7 +303,7 @@ def calculate_cagr(
 
 def calculate_asset_allocation(holdings: list[Holding]) -> dict[str, Decimal]:
     """Returns {investment_type: weight_pct} for holdings with known market value."""
-    total = sum(h.market_value for h in holdings if h.market_value is not None) or Decimal(0)
+    total = sum(h.market_value for h in holdings if h.market_value is not None) or Decimal("0")
     if total == 0:
         return {}
 
@@ -310,14 +312,14 @@ def calculate_asset_allocation(holdings: list[Holding]) -> dict[str, Decimal]:
         if h.market_value is None:
             continue
         key = h.investment_type
-        allocation[key] = allocation.get(key, Decimal(0)) + h.market_value
+        allocation[key] = allocation.get(key, Decimal("0")) + h.market_value
 
     return {k: (v / total * 100).quantize(Decimal("0.01")) for k, v in allocation.items()}
 
 
 def calculate_sector_allocation(holdings: list[Holding]) -> dict[str, Decimal]:
     """Returns {sector: weight_pct}. 'Unknown' for holdings without sector data."""
-    total = sum(h.market_value for h in holdings if h.market_value is not None) or Decimal(0)
+    total = sum(h.market_value for h in holdings if h.market_value is not None) or Decimal("0")
     if total == 0:
         return {}
 
@@ -326,12 +328,12 @@ def calculate_sector_allocation(holdings: list[Holding]) -> dict[str, Decimal]:
         if h.market_value is None:
             continue
         sector = h.sector or "Unknown"
-        allocation[sector] = allocation.get(sector, Decimal(0)) + h.market_value
+        allocation[sector] = allocation.get(sector, Decimal("0")) + h.market_value
 
     return {k: (v / total * 100).quantize(Decimal("0.01")) for k, v in allocation.items()}
 
 
-def calculate_concentration(holdings: list[Holding]) -> tuple[Decimal | None, Decimal | None]:
+def calculate_concentration(holdings: list[Holding]) -> tuple[Optional[Decimal], Optional[Decimal]]:
     """
     Returns (top1_pct, top3_pct) of portfolio market value.
     Returns (None, None) if no holdings have market values.

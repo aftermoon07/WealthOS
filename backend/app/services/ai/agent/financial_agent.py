@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 AI FINANCIAL ANALYST AGENT
 ============================
@@ -19,24 +18,26 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date
+from datetime import date, datetime
+from typing import Optional
 
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.services.ai.tools.financial_tools import (
-    get_anomalies,
-    get_asset_allocation,
     get_financial_summary,
-    get_goal_progress,
+    get_spending_analysis,
+    get_portfolio_summary,
     get_holdings,
+    get_asset_allocation,
+    get_portfolio_risk,
+    get_anomalies,
+    get_goal_progress,
     get_monthly_comparison,
     get_net_worth_history,
-    get_portfolio_risk,
-    get_portfolio_summary,
-    get_spending_analysis,
 )
+
 
 SYSTEM_PROMPT = """You are a private, precise AI financial analyst for a personal finance application.
 
@@ -129,8 +130,8 @@ def _select_tools(question: str) -> list[str]:
 async def _execute_tools(
     tool_names: list[str],
     db: AsyncSession,
-    year: int | None,
-    month: int | None,
+    year: Optional[int],
+    month: Optional[int],
 ) -> dict:
     """Execute selected tools and return combined context."""
     context = {}
@@ -172,8 +173,8 @@ async def _execute_tools(
 async def run_financial_agent(
     question: str,
     db: AsyncSession,
-    year: int | None = None,
-    month: int | None = None,
+    year: Optional[int] = None,
+    month: Optional[int] = None,
 ) -> dict:
     """
     Main agent function.

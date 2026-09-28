@@ -1,4 +1,3 @@
-# mypy: ignore-errors
 """
 AngelOne SmartAPI integration service.
 
@@ -15,22 +14,19 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
+from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.models.models import (
-    InvestmentTransaction,
-    InvestmentTxnType,
-    MarketDataSource,
-    MarketPrice,
-    Security,
+    Security, InvestmentTransaction, InvestmentTxnType,
+    MarketPrice, MarketDataSource,
 )
-
-from .angelone_normalizer import normalize_holding, normalize_position, normalize_trade
+from .angelone_normalizer import normalize_holding, normalize_trade, normalize_position
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +85,7 @@ class AngelOneService:
         Raises ConnectionError on failure.
         """
         if not self._has_credentials:
-            raise OSError(
+            raise EnvironmentError(
                 "AngelOne credentials not configured. "
                 "Set ANGEL_API_KEY, ANGEL_CLIENT_ID, ANGEL_PASSWORD, ANGEL_TOTP_SECRET in .env"
             )
@@ -204,8 +200,8 @@ async def _upsert_holdings(db: AsyncSession, holdings: list[dict]) -> int:
     """
     count = 0
     for h in holdings:
-        h["ticker"]
-        h["exchange"]
+        ticker = h["ticker"]
+        exchange = h["exchange"]
 
         # Upsert Security
         sec = await _get_or_create_security(db, h)
@@ -270,8 +266,8 @@ async def _upsert_trades(db: AsyncSession, trades: list[dict]) -> int:
             txn_date=t["txn_date"],
             quantity=t["quantity"],
             price=t["price"],
-            fees=Decimal(0),
-            taxes=Decimal(0),
+            fees=Decimal("0"),
+            taxes=Decimal("0"),
             reference=t["reference"],
         )
         db.add(inv_txn)
@@ -306,7 +302,7 @@ async def _get_or_create_security(db: AsyncSession, h: dict) -> Security:
 
 # ── Singleton ─────────────────────────────────────────────────────────────────
 
-_service_instance: AngelOneService | None = None
+_service_instance: Optional[AngelOneService] = None
 
 
 def get_angelone_service() -> AngelOneService:

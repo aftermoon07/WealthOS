@@ -3,21 +3,21 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any
+from typing import Optional, Any
+from pydantic import BaseModel, Field, field_validator
 
-from pydantic import BaseModel, Field
 
 # ─── Account ──────────────────────────────────────────────────────────────────
 
 class AccountCreate(BaseModel):
     name: str
     account_type: str
-    institution: str | None = None
+    institution: Optional[str] = None
     currency: str = "INR"
-    outstanding_balance: Decimal | None = None
-    loan_principal: Decimal | None = None
-    interest_rate: Decimal | None = None
-    emi: Decimal | None = None
+    outstanding_balance: Optional[Decimal] = None
+    loan_principal: Optional[Decimal] = None
+    interest_rate: Optional[Decimal] = None
+    emi: Optional[Decimal] = None
 
 
 class AccountOut(AccountCreate):
@@ -37,11 +37,11 @@ class TransactionCreate(BaseModel):
     amount: Decimal = Field(..., gt=0)
     currency: str = "INR"
     description: str
-    merchant: str | None = None
-    category_id: int | None = None
+    merchant: Optional[str] = None
+    category_id: Optional[int] = None
     transaction_type: str
-    transfer_account_id: int | None = None
-    reference: str | None = None
+    transfer_account_id: Optional[int] = None
+    reference: Optional[str] = None
 
 
 class TransactionOut(BaseModel):
@@ -51,11 +51,11 @@ class TransactionOut(BaseModel):
     amount: Decimal
     currency: str
     description: str
-    merchant: str | None
-    category_id: int | None
-    category_name: str | None = None
+    merchant: Optional[str]
+    category_id: Optional[int]
+    category_name: Optional[str] = None
     transaction_type: str
-    duplicate_status: str | None
+    duplicate_status: Optional[str]
     created_at: datetime
 
     class Config:
@@ -63,10 +63,10 @@ class TransactionOut(BaseModel):
 
 
 class TransactionUpdate(BaseModel):
-    category_id: int | None = None
-    description: str | None = None
-    merchant: str | None = None
-    transaction_type: str | None = None
+    category_id: Optional[int] = None
+    description: Optional[str] = None
+    merchant: Optional[str] = None
+    transaction_type: Optional[str] = None
 
 
 # ─── Investment Transaction ───────────────────────────────────────────────────
@@ -78,8 +78,8 @@ class InvestmentTransactionCreate(BaseModel):
     txn_type: str
     quantity: Decimal = Field(..., gt=0)
     price: Decimal = Field(..., gt=0)
-    fees: Decimal = Decimal(0)
-    taxes: Decimal = Decimal(0)
+    fees: Decimal = Decimal("0")
+    taxes: Decimal = Decimal("0")
     currency: str = "INR"
 
 
@@ -97,10 +97,10 @@ class SecurityCreate(BaseModel):
     ticker: str
     name: str
     investment_type: str
-    sector: str | None = None
-    asset_class: str | None = None
+    sector: Optional[str] = None
+    asset_class: Optional[str] = None
     currency: str = "INR"
-    isin: str | None = None
+    isin: Optional[str] = None
 
 
 class SecurityOut(SecurityCreate):
@@ -125,11 +125,11 @@ class GoalCreate(BaseModel):
     name: str
     goal_type: str
     target_amount: Decimal = Field(..., gt=0)
-    current_amount: Decimal = Decimal(0)
-    target_date: date | None = None
-    monthly_contribution: Decimal | None = None
-    expected_return_pct: Decimal | None = None
-    notes: str | None = None
+    current_amount: Decimal = Decimal("0")
+    target_date: Optional[date] = None
+    monthly_contribution: Optional[Decimal] = None
+    expected_return_pct: Optional[Decimal] = None
+    notes: Optional[str] = None
 
 
 class GoalOut(GoalCreate):
@@ -145,8 +145,8 @@ class GoalOut(GoalCreate):
 
 class AssistantQuery(BaseModel):
     message: str = Field(..., min_length=1, max_length=500)
-    year: int | None = None
-    month: int | None = None
+    year: Optional[int] = None
+    month: Optional[int] = None
 
 
 class AssistantResponse(BaseModel):
@@ -158,7 +158,7 @@ class AssistantResponse(BaseModel):
     confidence_reason: str = ""
     tools_called: list[str] = []
     structured_data: dict[str, Any] = {}
-    error: str | None = None
+    error: Optional[str] = None
 
 
 # ─── CSV Import ───────────────────────────────────────────────────────────────

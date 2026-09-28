@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal
+from typing import Optional
 
 from app.models.models import Goal
 
@@ -17,19 +18,19 @@ class GoalAnalysis:
     current: Decimal
     progress_pct: Decimal
     remaining: Decimal
-    target_date: date | None
-    monthly_contribution: Decimal | None
-    months_remaining: int | None
-    projected_value: Decimal | None
-    required_monthly: Decimal | None
-    on_track: bool | None
-    shortfall: Decimal | None
+    target_date: Optional[date]
+    monthly_contribution: Optional[Decimal]
+    months_remaining: Optional[int]
+    projected_value: Optional[Decimal]
+    required_monthly: Optional[Decimal]
+    on_track: Optional[bool]
+    shortfall: Optional[Decimal]
 
 
-def analyze_goal(goal: Goal, today: date | None = None) -> GoalAnalysis:
+def analyze_goal(goal: Goal, today: Optional[date] = None) -> GoalAnalysis:
     today = today or date.today()
 
-    progress = (goal.current_amount / goal.target_amount * 100) if goal.target_amount > 0 else Decimal(0)
+    progress = (goal.current_amount / goal.target_amount * 100) if goal.target_amount > 0 else Decimal("0")
     remaining = goal.target_amount - goal.current_amount
 
     months_remaining = None
@@ -56,7 +57,7 @@ def analyze_goal(goal: Goal, today: date | None = None) -> GoalAnalysis:
                 projected_value = Decimal(str(round(fv_contributions + fv_current, 2)))
 
             on_track = projected_value >= goal.target_amount
-            shortfall = max(goal.target_amount - projected_value, Decimal(0)) if projected_value else None
+            shortfall = max(goal.target_amount - projected_value, Decimal("0")) if projected_value else None
 
         # Required monthly to reach goal (no return assumption)
         if months_remaining > 0 and remaining > 0:

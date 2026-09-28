@@ -14,8 +14,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from decimal import Decimal
+from typing import Optional
 
 from app.models.models import Transaction, TransactionType
+
 
 EXCLUDE_FROM_CASHFLOW = {
     TransactionType.TRANSFER,
@@ -26,13 +28,13 @@ EXCLUDE_FROM_CASHFLOW = {
 
 @dataclass
 class CashFlowResult:
-    income: Decimal = Decimal(0)
-    expenses: Decimal = Decimal(0)
-    investment_contributions: Decimal = Decimal(0)
-    transfers: Decimal = Decimal(0)
-    debt_payments: Decimal = Decimal(0)
-    savings: Decimal = Decimal(0)
-    savings_rate: Decimal | None = None  # None if income == 0
+    income: Decimal = Decimal("0")
+    expenses: Decimal = Decimal("0")
+    investment_contributions: Decimal = Decimal("0")
+    transfers: Decimal = Decimal("0")
+    debt_payments: Decimal = Decimal("0")
+    savings: Decimal = Decimal("0")
+    savings_rate: Optional[Decimal] = None  # None if income == 0
     period_label: str = ""
     transaction_count: int = 0
 
@@ -85,9 +87,9 @@ class MonthlyComparison:
     current: CashFlowResult
     previous: CashFlowResult
     income_change: Decimal = field(init=False)
-    income_change_pct: Decimal | None = field(init=False)
+    income_change_pct: Optional[Decimal] = field(init=False)
     expense_change: Decimal = field(init=False)
-    expense_change_pct: Decimal | None = field(init=False)
+    expense_change_pct: Optional[Decimal] = field(init=False)
     savings_change: Decimal = field(init=False)
 
     def __post_init__(self):
