@@ -1,7 +1,10 @@
 {
-  "rootDirectory": "frontend",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://wealthos-backend.onrender.com/api/:path*" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://wealthos-backend.onrender.com/api/:path*"
+    }
   ]
 }
