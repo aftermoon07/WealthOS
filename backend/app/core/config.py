@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     # AI
     gemini_api_key: str = Field(default="", validation_alias="GEMINI_API_KEY")
     gemini_model: str = Field(
-        default="gemini-3.6-flash", validation_alias="GEMINI_MODEL"
+        default="gemini-2.5-flash", validation_alias="GEMINI_MODEL"
     )
 
     # App
@@ -50,3 +50,9 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+def reload_settings() -> Settings:
+    """Clear the cache and reload settings from .env. Useful after .env changes."""
+    get_settings.cache_clear()
+    return get_settings()

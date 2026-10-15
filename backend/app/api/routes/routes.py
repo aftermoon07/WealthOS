@@ -587,21 +587,54 @@ async def assistant_query(
 
 @router.get("/dashboard")
 async def dashboard(db: AsyncSession = Depends(get_db)):
-    """All data needed for the dashboard in a single call."""
-    today = date.today()
-    year, month = today.year, today.month
-
+    """All data needed for the dashboard in a single call.
+    
+    Performance: all heavy service calls run concurrently via asyncio.gather.
+    Each tool function opens its own DB queries independently so concurrent
+    execution is safe — they share the same AsyncSession (reads only).
+    """
+    import asyncio
+    from app.db.database import AsyncSessionLocal
     from app.services.ai.tools.financial_tools import (
         get_anomalies as _anoms,
-    )
-    from app.services.ai.tools.financial_tools import (
         get_financial_summary,
         get_goal_progress,
         get_portfolio_summary,
         get_spending_analysis,
     )
-    summary = await get_financial_summary(db, year, month)
-    portfolio_summary = await get_portfolio_summary(db)
+
+    # Find latest transaction date
+    result = await db.execute(select(Transaction.date).order_by(Transaction.date.desc()).limit(1))
+    latest_date = result.scalar_one_or_none()
+
+    if latest_date:
+        year, month = latest_date.year, latest_date.month
+    else:
+        today_d = date.today()
+        year, month = today_d.year, today_d.month
+
+    # ── Run all heavy queries CONCURRENTLY with independent sessions ──────────
+    # Using separate sessions per coroutine avoids SQLAlchemy async session
+    # contention while still allowing true parallel DB execution.
+    async def _run(coro_fn, *args):
+        async with AsyncSessionLocal() as session:
+            return await coro_fn(session, *args)
+
+    (
+        summary,
+        portfolio_summary,
+        spending,
+        anomalies,
+        goals,
+        nw_history,
+    ) = await asyncio.gather(
+        _run(get_financial_summary, year, month),
+        _run(get_portfolio_summary),
+        _run(get_spending_analysis, year, month),
+        _run(_anoms, year, month),
+        _run(get_goal_progress),
+        _run(get_net_worth_history),
+    )
 
     # Augment summary with frontend-expected keys
     summary["income"] = summary["monthly_income"]
@@ -610,18 +643,13 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
     summary["xirr"] = portfolio_summary.get("xirr")
     summary["unrealized_pnl_pct"] = portfolio_summary.get("unrealized_pnl_pct")
 
-    spending = await get_spending_analysis(db, year, month)
-    anomalies = await _anoms(db, year, month)
-    goals = await get_goal_progress(db)
-    nw_history = await get_net_worth_history(db)
-
     return {
         "summary": summary,
         "top_spending_categories": spending["categories"][:5],
         "anomaly_count": anomalies["anomaly_count"],
         "recent_anomalies": anomalies["anomalies"][:3],
         "goals": goals["goals"],
-        "net_worth_history": nw_history[-6:],  # Last 6 months
+        "net_worth_history": nw_history["history"][-6:] if isinstance(nw_history, dict) and "history" in nw_history else nw_history[-6:],  # Last 6 months
         "market_data_source": get_settings().market_data_source,
     }
 

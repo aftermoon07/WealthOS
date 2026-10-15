@@ -192,15 +192,23 @@ async def run_financial_agent(
     # Step 2: Execute tools
     context = await _execute_tools(tool_names, db, year, month)
 
-    # If no API key, return data only
-    if not settings.gemini_api_key or settings.gemini_api_key == "your_gemini_api_key_here":
+    # If no valid API key, return data only
+    api_key = settings.gemini_api_key.strip() if settings.gemini_api_key else ""
+    key_is_valid = bool(api_key) and api_key != "your_gemini_api_key_here" and api_key.startswith("AIza")
+    if not key_is_valid:
+        missing_reason = (
+            "GEMINI_API_KEY is not set in backend/.env"
+            if not api_key or api_key == "your_gemini_api_key_here"
+            else "GEMINI_API_KEY looks invalid (must start with 'AIza'). "
+                 "Get a real key at https://aistudio.google.com/apikey"
+        )
         return {
-            "summary": "AI analysis requires a Gemini API key. The structured data below contains your financial information.",
+            "summary": f"AI analysis requires a valid Gemini API key. {missing_reason}",
             "evidence": [],
             "drivers": [],
-            "watch_items": ["Configure GEMINI_API_KEY in your .env file to enable AI analysis."],
+            "watch_items": [missing_reason],
             "confidence": "N/A",
-            "confidence_reason": "No AI model configured",
+            "confidence_reason": "No valid AI model configured",
             "structured_data": context,
             "tools_called": tool_names,
         }
@@ -216,9 +224,10 @@ Answer the question using ONLY the data above. Follow the JSON response format e
 
     try:
         # Direct Gemini REST API call — no SDK dependency
+        model = settings.gemini_model.strip() if settings.gemini_model else "gemini-2.5-flash"
         api_url = (
             f"https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{settings.gemini_model}:generateContent?key={settings.gemini_api_key}"
+            f"{model}:generateContent?key={api_key}"
         )
         payload = {
             "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
