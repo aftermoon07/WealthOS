@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import and_, select
@@ -601,6 +602,7 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
         get_goal_progress,
         get_portfolio_summary,
         get_spending_analysis,
+        get_net_worth_history as _get_nw_history,
     )
 
     # Find latest transaction date
@@ -622,7 +624,7 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
 
     (
         summary,
-        portfolio_summary,
+        portfolio_summary_data,
         spending,
         anomalies,
         goals,
@@ -633,15 +635,23 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
         _run(get_spending_analysis, year, month),
         _run(_anoms, year, month),
         _run(get_goal_progress),
-        _run(get_net_worth_history),
+        _run(_get_nw_history),
     )
 
     # Augment summary with frontend-expected keys
     summary["income"] = summary["monthly_income"]
     summary["expenses"] = summary["monthly_expenses"]
     summary["savings"] = summary["monthly_savings"]
-    summary["xirr"] = portfolio_summary.get("xirr")
-    summary["unrealized_pnl_pct"] = portfolio_summary.get("unrealized_pnl_pct")
+    summary["xirr"] = portfolio_summary_data.get("xirr")
+    summary["unrealized_pnl_pct"] = portfolio_summary_data.get("unrealized_pnl_pct")
+
+    # Normalise net worth history — always a list of {date, net_worth}
+    if isinstance(nw_history, dict) and "history" in nw_history:
+        nw_list = nw_history["history"]
+    elif isinstance(nw_history, list):
+        nw_list = nw_history
+    else:
+        nw_list = []
 
     return {
         "summary": summary,
@@ -649,7 +659,7 @@ async def dashboard(db: AsyncSession = Depends(get_db)):
         "anomaly_count": anomalies["anomaly_count"],
         "recent_anomalies": anomalies["anomalies"][:3],
         "goals": goals["goals"],
-        "net_worth_history": nw_history["history"][-6:] if isinstance(nw_history, dict) and "history" in nw_history else nw_history[-6:],  # Last 6 months
+        "net_worth_history": nw_list[-6:],
         "market_data_source": get_settings().market_data_source,
     }
 

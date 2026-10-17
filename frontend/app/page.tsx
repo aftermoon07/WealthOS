@@ -86,11 +86,33 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/dashboard")
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(setData)
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+
+    const fetchDashboard = async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15_000);
+
+      try {
+        const r = await fetch("/api/dashboard", { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const json = await r.json();
+        if (!cancelled) setData(json);
+      } catch (e: any) {
+        clearTimeout(timeout);
+        if (cancelled) return;
+        if (e.name === "AbortError") {
+          setError("Request timed out — backend is taking too long to respond.");
+        } else {
+          setError(e.message);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+    return () => { cancelled = true; };
   }, []);
 
   if (loading) return <Skeleton />;

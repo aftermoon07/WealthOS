@@ -19,6 +19,8 @@ async def _angelone_sync_loop(interval_seconds: int) -> None:
     """
     Background task: syncs AngelOne data every `interval_seconds`.
     Gracefully skips if credentials are not configured or if sync fails.
+    Uses a short timeout on the first attempt so a bad network/credential
+    situation never delays the server from serving requests.
     """
     from app.services.integrations.angelone.angelone_service import get_angelone_service
 
@@ -30,7 +32,10 @@ async def _angelone_sync_loop(interval_seconds: int) -> None:
     while True:
         try:
             async with AsyncSessionLocal() as db:
-                result = await svc.sync_to_db(db)
+                result = await asyncio.wait_for(
+                    svc.sync_to_db(db),
+                    timeout=30,  # Hard ceiling — never block event loop > 30s
+                )
                 if result.get("skipped"):
                     logger.info(
                         "AngelOne auto-sync skipped: %s. "
@@ -43,6 +48,8 @@ async def _angelone_sync_loop(interval_seconds: int) -> None:
                         result.get("holdings_synced", 0),
                         result.get("trades_synced", 0),
                     )
+        except asyncio.TimeoutError:
+            logger.warning("AngelOne auto-sync timed out after 30s (will retry in %ds)", interval_seconds)
         except Exception as e:
             logger.warning("AngelOne auto-sync failed (will retry in %ds): %s", interval_seconds, e)
 
@@ -80,10 +87,16 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000", 
+        "http://localhost:3000",
         "http://localhost:3001",
-        "https://wealth-os-app.vercel.app"
+        # Allow any Vercel preview/production domain for this project
+        "https://wealth-os-app.vercel.app",
+        "https://wealthos.vercel.app",
+        "https://wealthos-aftermoon07.vercel.app",
+        # Wildcard for all Vercel deploy previews (pattern match not supported
+        # by FastAPI/starlette natively, so we use allow_origin_regex below)
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
